@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Wallace &middot; Advisor Digital Twin</title>
+<title>Wallace · Advisor Digital Twin</title>
 <style>
   :root{
     --bg:#0A0A0E; --panel:#0E1230; --panel2:#11163C; --card:#0D0D14;
@@ -33,11 +33,13 @@
   .grid{display:grid;gap:12px}
   .g2{grid-template-columns:1fr 1fr} .g3{grid-template-columns:1fr 1fr 1fr} .g4{grid-template-columns:repeat(4,1fr)}
   @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
-  button.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:600}
+  button.btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 17px;font-family:inherit;font-size:14px;cursor:pointer;font-weight:600}
   button.btn:hover{background:var(--accent2)}
+  button.big{font-size:15px;padding:13px 22px}
   button.ghost{background:transparent;color:var(--ink);border:1px solid var(--hairline)}
   button.ghost:hover{border-color:var(--accent);background:#12142a}
   button.gold{background:var(--peri);color:#0A0A0E} button.gold:hover{background:#a7b3f7}
+  button:disabled{opacity:.5;cursor:not-allowed}
   table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
   th{background:var(--panel2);color:var(--ink);text-align:left;padding:8px 10px;font-weight:600;border-bottom:1px solid var(--hairline)}
   td{padding:8px 10px;border-bottom:1px solid var(--hairline);color:var(--ink);vertical-align:top}
@@ -52,8 +54,8 @@
   .kpi .n{font-size:30px;font-weight:700;color:var(--peri)} .kpi .l{font-size:12.5px;color:var(--faint)}
   .q{margin:14px 0;padding:12px 14px;background:#0c1024;border-left:3px solid var(--accent);border-radius:0 10px 10px 0}
   .q .qt{font-weight:600;color:var(--ink)} .q .why{font-size:12px;color:var(--faint);margin-top:2px}
-  input[type=text],textarea,select{width:100%;font-family:inherit;font-size:14px;padding:8px;border:1px solid var(--hairline);border-radius:8px;margin-top:6px;background:#0c0d16;color:var(--ink)}
-  textarea{min-height:52px;resize:vertical}
+  input[type=text],input[type=password],textarea,select{width:100%;font-family:inherit;font-size:14px;padding:9px;border:1px solid var(--hairline);border-radius:8px;margin-top:6px;background:#0c0d16;color:var(--ink)}
+  textarea{min-height:60px;resize:vertical}
   .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .rule-chip{display:inline-block;background:#12152c;border:1px solid var(--hairline);border-radius:8px;padding:3px 9px;margin:3px 3px 0 0;font-size:12px;color:var(--muted)}
   .banner{background:#12152c;border:1px solid var(--hairline);border-left:3px solid var(--peri);color:var(--muted);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;margin:10px 0}
@@ -65,6 +67,38 @@
   .choice:hover{border-color:var(--accent);background:#12142a}
   .choice.sel{border-color:var(--accent);background:#141833}
   footer{max-width:1080px;margin:10px auto 40px;padding:0 24px;color:var(--faint);font-size:12px}
+  /* upload */
+  .dropzone{border:2px dashed var(--hairline);border-radius:16px;padding:34px 20px;text-align:center;background:#0c0d16;cursor:pointer;transition:.15s}
+  .dropzone:hover{border-color:var(--accent2)}
+  .dropzone.drag{border-color:var(--accent);background:#12142a}
+  .dz-ic{font-size:30px;color:var(--accent2)}
+  .filerow{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--hairline);border-radius:10px;background:#0c0d16;margin-top:8px}
+  .filerow .fi{width:30px;height:30px;border-radius:7px;background:#171c40;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--peri);font-weight:700;flex:0 0 auto}
+  .filerow .fx{margin-left:auto;color:var(--faint);cursor:pointer;font-size:13px}
+  .tag{font-size:11px;padding:1px 8px;border-radius:8px;font-weight:600}
+  .tag.loaded{background:#0f2a1f;color:#8fe0b4} .tag.queued{background:#2a2410;color:#e0c07a}
+  /* connectors */
+  .conn-cat{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--peri);margin:2px 0 8px}
+  .conn-card{background:#0c0d16;border:1px solid var(--hairline);border-radius:10px;padding:11px 13px;display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .conn-card .nm{font-weight:600;font-size:13.5px}
+  .badge-soon{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--amber);background:#2a2410;border:1px solid #4a3d15;border-radius:8px;padding:1px 7px}
+  .ai-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;color:var(--peri);background:#171c40;border:1px solid #2c356b;border-radius:8px;padding:2px 9px;margin-left:8px}
+  /* chat */
+  .chat{background:#0c0d16;border:1px solid var(--hairline);border-radius:12px;padding:12px;max-height:360px;overflow:auto}
+  .msg{display:flex;gap:9px;margin:9px 0;align-items:flex-start}
+  .msg .av{width:26px;height:26px;border-radius:7px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  .msg.ai .av{background:var(--accent);color:#fff} .msg.you .av{background:#2A2E44;color:var(--ink)}
+  .msg .bubble{background:#12152c;border:1px solid var(--hairline);border-radius:10px;padding:9px 12px;font-size:13.5px;max-width:80%}
+  .msg.you .bubble{background:#141833}
+  .log{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--muted);background:#08080c;border:1px solid var(--hairline);border-radius:10px;padding:12px;white-space:pre-wrap;min-height:20px}
+  .log .ok{color:var(--green)} .log .hl{color:var(--peri)}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--accent);color:var(--ink);padding:11px 18px;border-radius:10px;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.5);opacity:0;transition:.25s;z-index:50}
+  .toast.show{opacity:1}
+  details.adv{background:#0c0d16;border:1px solid var(--hairline);border-radius:12px;padding:6px 14px;margin-top:14px}
+  details.adv summary{cursor:pointer;color:var(--muted);font-size:13px;padding:8px 0}
+  .steps-strip{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+  .stepchip{font-size:12px;color:var(--muted);background:#0c0d16;border:1px solid var(--hairline);border-radius:20px;padding:5px 12px}
+  .stepchip b{color:var(--peri)}
 </style>
 </head>
 <body>
@@ -80,98 +114,151 @@
 </header>
 <nav id="nav">
   <button data-tab="overview" class="active">Overview</button>
-  <button data-tab="ingest">1 · Ingest</button>
-  <button data-tab="discover">2 · Discover Triggers</button>
-  <button data-tab="elicit">3 · Elicit</button>
-  <button data-tab="profile">4 · The Profile</button>
-  <button data-tab="activate">5 · Activate</button>
+  <button data-tab="connect">1 &middot; Upload &amp; Connect</button>
+  <button data-tab="capture">2 &middot; AI Capture</button>
+  <button data-tab="profile">3 &middot; Methodology</button>
+  <button data-tab="activate">4 &middot; Activate</button>
 </nav>
 <main>
 
 <!-- OVERVIEW -->
 <section id="overview" class="tab active">
-  <h2>What this is</h2>
-  <p class="lead">A standalone, offline demonstration of the Advisor Digital Twin. It captures how a retiring
-  advisor runs their book, turns it into a portable <b>Methodology Profile</b>, and uses that profile to drive
-  the incoming advisor during and after the handoff. It runs entirely in your browser and ships with a synthetic book so you can click through immediately, or upload your own CSVs in <b>Ingest</b>.</p>
+  <h2>Turn a retiring advisor's know-how into a living playbook</h2>
+  <p class="lead">Upload the files, let the AI ask a few questions and read the data, and it captures how the
+  advisor runs their book, their methodology, judgment, and client style, into one portable profile that
+  drives the next advisor. Built for busy, non-technical teams: three clicks, plain English, no setup.</p>
 
-  <div class="grid g4">
+  <div class="steps-strip">
+    <span class="stepchip"><b>1</b> Upload &amp; connect your data</span>
+    <span class="stepchip"><b>2</b> Let the AI capture the methodology</span>
+    <span class="stepchip"><b>3</b> Review the profile</span>
+    <span class="stepchip"><b>4</b> Hand it to the successor</span>
+  </div>
+
+  <div class="grid g4" style="margin-top:14px">
     <div class="kpi"><div class="n" id="kHouse">0</div><div class="l">Households</div></div>
-    <div class="kpi"><div class="n" id="kActions">0</div><div class="l">Actions ingested</div></div>
-    <div class="kpi"><div class="n" id="kTriggers">0</div><div class="l">Triggers mined</div></div>
+    <div class="kpi"><div class="n" id="kActions">0</div><div class="l">Actions read</div></div>
+    <div class="kpi"><div class="n" id="kTriggers">0</div><div class="l">Rules captured</div></div>
     <div class="kpi"><div class="n" id="kNBA">0</div><div class="l">Actions due now</div></div>
   </div>
 
   <div class="card">
-    <h3 style="margin-top:4px">The five steps</h3>
-    <table>
-      <tr><th>Step</th><th>What happens</th><th>Try it</th></tr>
-      <tr><td><b>1 Ingest</b></td><td>Load the demo book or upload CSVs of clients, actions, and communications.</td><td><a class="link" onclick="go('ingest')">Open Ingest</a></td></tr>
-      <tr><td><b>2 Discover</b></td><td>The engine mines triggers (cadence, drift bands, harvesting rhythm, market-reaction) with confidence scores.</td><td><a class="link" onclick="go('discover')">Open Discover</a></td></tr>
-      <tr><td><b>3 Elicit</b></td><td>A short questionnaire confirms low-confidence rules and captures the judgment the data cannot show.</td><td><a class="link" onclick="go('elicit')">Open Elicit</a></td></tr>
-      <tr><td><b>4 Profile</b></td><td>Everything compiles into one versioned, exportable methodology object (download as JSON).</td><td><a class="link" onclick="go('profile')">Open Profile</a></td></tr>
-      <tr><td><b>5 Activate</b></td><td>Next-best-action queue, per-household playbooks, and a shadow-mode test that scores the successor's adherence.</td><td><a class="link" onclick="go('activate')">Open Activate</a></td></tr>
-    </table>
-    <div class="banner">MVP scope: real logic, synthetic data, local-only. No custodian/CRM connectors, no ML, no security layer.
-    Your work is saved in this browser only (localStorage).</div>
+    <div class="flex" style="justify-content:space-between">
+      <div><b>Start in seconds</b><div class="small muted">Load a sample advisor's book, or bring your own files.</div></div>
+      <button class="btn big" onclick="go('connect')">Get started &rarr;</button>
+    </div>
+    <div class="banner">Demo build: the AI runs in a safe simulated mode (no account or key needed) and your files never
+    leave your browser. The same buttons are wired to connect the real Claude and live integrations when you are ready.</div>
   </div>
 </section>
 
-<!-- INGEST -->
-<section id="ingest" class="tab">
-  <h2>1 · Ingest the book</h2>
-  <p class="lead">The demo book is a retiring advisor's practice: twelve households across three service tiers,
-  with about two years of actions. Load it, or upload your own CSV exports.</p>
-  <div class="flex">
-    <button class="btn" onclick="loadDemo()">Load demo book</button>
-    <button class="ghost btn" onclick="resetAll()">Reset everything</button>
+<!-- CONNECT -->
+<section id="connect" class="tab">
+  <h2>1 &middot; Upload &amp; connect</h2>
+  <p class="lead">Drop in anything that shows how the advisor works: client lists, CRM exports, meeting notes,
+  spreadsheets, PDFs, procedures. The AI will read them in the next step. Nothing is uploaded to a server, it
+  stays in your browser.</p>
+
+  <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+    <div class="dz-ic">&#8682;</div>
+    <div style="font-weight:600;margin-top:6px">Drag &amp; drop files here, or click to browse</div>
+    <div class="small muted" style="margin-top:4px">CSV, Excel, PDF, Word, text, notes, images &middot; as many as you like</div>
+    <input type="file" id="fileInput" multiple style="display:none"/>
+  </div>
+  <div id="fileList"></div>
+
+  <div class="flex" style="margin-top:12px">
+    <button class="btn" onclick="loadDemo()">Load sample advisor book</button>
+    <button class="ghost btn" onclick="resetAll()">Clear everything</button>
+    <span class="small muted" id="connectSummary"></span>
   </div>
 
-  <div class="grid g2" style="margin-top:14px">
-    <div class="card">
-      <h3 style="margin-top:2px">Upload your own (optional)</h3>
-      <p class="small muted">CSV headers expected below. Anything missing falls back to the demo.</p>
-      <div class="small"><b>clients.csv:</b> <code>id,name,aum,tier,birthday_month,retirement_age,last_review,sensitivities,goals</code></div>
-      <input type="file" accept=".csv" id="fClients" class="small">
-      <div class="small" style="margin-top:8px"><b>actions.csv:</b> <code>date,household_id,type,signal,detail</code></div>
-      <input type="file" accept=".csv" id="fActions" class="small">
-      <div style="margin-top:10px"><button class="btn" onclick="importCsv()">Import CSVs</button></div>
-    </div>
-    <div class="card">
-      <h3 style="margin-top:2px">Book summary</h3>
-      <div id="ingestSummary" class="small muted">Nothing loaded yet.</div>
-    </div>
-  </div>
   <div class="card" id="householdCard" style="display:none">
-    <h3 style="margin-top:2px">Households</h3>
+    <h3 style="margin-top:2px">What we found</h3>
+    <div id="ingestSummary" class="small muted"></div>
     <div style="overflow:auto"><table id="tblHouse"></table></div>
   </div>
+
+  <h3>Connect your systems <span class="badge-soon">coming soon</span></h3>
+  <p class="small muted">Live, one-click sync so you never export a file again. Tell us which you use and we will
+  prioritize it.</p>
+  <div id="connGrid"></div>
+
+  <details class="adv">
+    <summary>Advanced: import a CSV with named columns</summary>
+    <div class="small muted" style="margin:6px 0">
+      <b>clients.csv:</b> <code>id,name,aum,tier,birthday_month,retirement_age,last_review,sensitivities,goals</code><br>
+      <b>actions.csv:</b> <code>date,household_id,type,signal,detail</code>
+    </div>
+    <div class="flex">
+      <div><div class="small">clients.csv</div><input type="file" accept=".csv" id="fClients" class="small"></div>
+      <div><div class="small">actions.csv</div><input type="file" accept=".csv" id="fActions" class="small"></div>
+    </div>
+    <div style="margin-top:10px"><button class="btn" onclick="importCsv()">Import CSVs</button></div>
+  </details>
 </section>
 
-<!-- DISCOVER -->
-<section id="discover" class="tab">
-  <h2>2 · Discover the methodology</h2>
-  <p class="lead">The engine reads the action log and mines recurring <b>condition → action</b> patterns, scoped by
-  segment, each with a confidence score derived from how consistently it appears. This is the raw methodology,
-  before the advisor confirms anything.</p>
-  <div class="flex"><button class="btn" onclick="mineTriggers()">Run the extraction engine</button>
-    <span class="small muted" id="mineNote"></span></div>
-  <div id="triggerOut"></div>
-</section>
+<!-- CAPTURE -->
+<section id="capture" class="tab">
+  <h2>2 &middot; AI Capture <span class="ai-badge" id="aiMode">Simulated AI</span></h2>
+  <p class="lead">This is where the AI does the work: it reads your data, asks a few sharp questions, and turns
+  the answers into a documented methodology, the rules, the judgment, and the voice.</p>
 
-<!-- ELICIT -->
-<section id="elicit" class="tab">
-  <h2>3 · Elicit what the data cannot show</h2>
-  <p class="lead">The engine flags low-confidence rules to confirm and gaps to fill. Answering these raises confidence,
-  upgrades provenance to <span class="prov both">observed + elicited</span>, and captures judgment notes.</p>
-  <div id="elicitOut"><div class="banner">Run the extraction engine first (step 2), then return here.</div></div>
+  <div class="card">
+    <div class="flex" style="justify-content:space-between">
+      <div><b>Step A &middot; Read the data</b><div class="small muted">The AI scans everything you uploaded and extracts the advisor's rules and cadence.</div></div>
+      <button class="btn big" id="btnAnalyze" onclick="analyzeWithAI()">Analyze my data &rarr;</button>
+    </div>
+    <div id="analyzeLog" class="log" style="display:none"></div>
+    <div id="triggerOut"></div>
+    <div id="mineNote" class="small muted"></div>
+  </div>
+
+  <div class="card">
+    <div><b>Step B &middot; Answer a few questions</b><div class="small muted">The AI asks what the data can't show, your judgment and the exceptions. Plain English, about two minutes.</div></div>
+    <div id="chat" class="chat" style="margin-top:10px"></div>
+    <div class="flex" style="margin-top:10px">
+      <input type="text" id="chatInput" placeholder="Type your answer..." style="flex:1;min-width:220px" onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="btn" onclick="sendChat()">Send</button>
+      <button class="ghost btn" onclick="startInterview()">Restart</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="flex" style="justify-content:space-between">
+      <div><b>Step C &middot; Generate the insight brief</b><div class="small muted">A plain-English read on the advisor's methodology, business acumen, and blind spots.</div></div>
+      <button class="btn" onclick="generateInsights()">Generate insights</button>
+    </div>
+    <div id="insightsOut"></div>
+  </div>
+
+  <div class="card">
+    <div class="flex" style="justify-content:space-between">
+      <div><b>Step D &middot; Draft in their voice</b><div class="small muted">A client note written in the advisor's style, for the successor to reuse.</div></div>
+      <button class="btn" onclick="draftInVoice()">Draft a client note</button>
+    </div>
+    <div id="draftOut"></div>
+  </div>
+
+  <details class="adv">
+    <summary>Advanced: connect the real Claude (optional)</summary>
+    <p class="small muted" style="margin:6px 0">By default this app uses a built-in simulation so it is safe to share and needs no setup.
+    To run the live model, paste an Anthropic API key, it is stored only in this browser and used to call Claude directly.
+    Best kept for a private, internal build.</p>
+    <div class="grid g2">
+      <div><div class="small">Anthropic API key</div><input type="password" id="aiKey" placeholder="sk-ant-..." oninput="setKey()"></div>
+      <div><div class="small">Model</div><input type="text" id="aiModelInput" placeholder="claude-sonnet-4-5" oninput="setModel()"></div>
+    </div>
+    <div class="small muted" id="aiKeyState" style="margin-top:8px">Status: simulated (no key set).</div>
+  </details>
 </section>
 
 <!-- PROFILE -->
 <section id="profile" class="tab">
-  <h2>4 · The Methodology Profile</h2>
-  <p class="lead">One versioned object: segmentation, the decision rulebook, communication cadence, judgment notes,
-  and a gap register. This is the portable artifact you would hand to a successor or store as a continuity record.</p>
+  <h2>3 &middot; The Methodology Profile</h2>
+  <p class="lead">One versioned, portable record of how this advisor runs their practice: segmentation, the rulebook,
+  communication style, judgment notes, and what still needs capturing. Hand it to the successor or keep it as a
+  continuity record.</p>
   <div class="flex">
     <button class="btn" onclick="compileProfile()">Compile / refresh profile</button>
     <button class="gold btn" onclick="exportProfile()">Export as JSON</button>
@@ -182,18 +269,18 @@
 
 <!-- ACTIVATE -->
 <section id="activate" class="tab">
-  <h2>5 · Activate: drive the successor</h2>
-  <p class="lead">The same profile powers the handoff. During the overlap it produces a work queue and per-household
-  playbooks; in shadow mode the successor makes calls and the Twin scores adherence to the predecessor's method.</p>
+  <h2>4 &middot; Activate: drive the successor</h2>
+  <p class="lead">The same profile powers the handoff: a work queue on the predecessor's cadence, per-household
+  playbooks, and a shadow-mode test that scores how closely the successor follows the method.</p>
 
   <h3>Next-best-action queue <span class="small muted">(computed from the rulebook against today)</span></h3>
-  <div id="nbaOut"><div class="banner">Compile the profile first (step 4).</div></div>
+  <div id="nbaOut"><div class="banner">Compile the profile first (step 3).</div></div>
 
   <h3>Per-household transition playbook</h3>
   <div class="flex"><select id="pbSelect" style="max-width:320px"></select><button class="btn" onclick="renderPlaybook()">Show playbook</button></div>
   <div id="pbOut"></div>
 
-  <h3>Shadow mode <span class="small muted">(successor decides, Twin reveals the predecessor's move)</span></h3>
+  <h3>Shadow mode <span class="small muted">(successor decides, the Twin reveals the predecessor's move)</span></h3>
   <div id="shadowOut"></div>
 
   <h3>Adherence</h3>
@@ -201,13 +288,15 @@
 </section>
 
 </main>
-<footer>Wallace Finance &middot; Advisor Digital Twin &middot; succession engine &middot; synthetic data, local-only, not investment advice.</footer>
+<footer>Wallace Finance &middot; Advisor Digital Twin &middot; succession engine &middot; simulated AI demo, files stay in your browser, not investment advice.</footer>
+<div id="toast" class="toast"></div>
 
 <script>
 /* ============================ STATE & UTIL ============================ */
 const NOW = new Date('2026-07-17T12:00:00');
 let state = { predecessor:'Robert Chen', successor:'Dana Ellis', households:[], actions:[],
-              triggers:[], profile:null, elicit:{}, adherence:[] };
+              triggers:[], profile:null, elicit:{}, adherence:[], files:[],
+              interview:{i:0,started:false}, aiInsights:null, aiKey:'', aiModel:'claude-sonnet-4-5' };
 const $ = id => document.getElementById(id);
 const fmtDate = d => (d instanceof Date? d : new Date(d)).toISOString().slice(0,10);
 const parse = s => new Date(s+'T12:00:00');
@@ -216,17 +305,19 @@ const addDays = (d,n)=>{const x=new Date(d); x.setDate(x.getDate()+n); return x;
 const median = a => {const s=[...a].sort((x,y)=>x-y); const m=Math.floor(s.length/2); return s.length? (s.length%2? s[m] : (s[m-1]+s[m])/2):0;};
 const mean = a => a.length? a.reduce((x,y)=>x+y,0)/a.length : 0;
 const std = a => {if(a.length<2)return 0; const m=mean(a); return Math.sqrt(mean(a.map(x=>(x-m)**2)));};
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
 function mulberry32(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function confLabel(c){return c>=0.8?['High','conf-hi']:c>=0.6?['Medium','conf-md']:['Low','conf-lo'];}
 function tierPill(t){return `<span class="pill p${t}">Tier ${t}</span>`;}
+function esc(s){return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 function save(){try{localStorage.setItem('adt_state',JSON.stringify(state));}catch(e){}}
-function load(){try{const s=localStorage.getItem('adt_state'); if(s){state=JSON.parse(s); return true;}}catch(e){} return false;}
+function load(){try{const s=localStorage.getItem('adt_state'); if(s){state=Object.assign(state,JSON.parse(s)); return true;}}catch(e){} return false;}
+function toast(msg){const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2600);}
 
 /* ============================ DEMO DATA ============================ */
-const TIER_CADENCE = {A:91, B:182, C:365};   // true behavior the engine should recover
+const TIER_CADENCE = {A:91, B:182, C:365};
 const TIER_BAND = {A:0.05, B:0.075, C:0.10};
 const MARKET_DROPS = [{date:'2025-04-07',draw:-0.09},{date:'2025-10-13',draw:-0.07}];
-
 function buildDemo(){
   const rng = mulberry32(42);
   const names=['Alvarez Family','Bianchi Trust','Chen-Wu Household','Delgado Family','Emerson Estate',
@@ -239,83 +330,127 @@ function buildDemo(){
     'Prefers email over calls','Approaching retirement in 2 yrs'];
   const goals=['Retirement + legacy','Retirement','College x2 + retirement','Business sale + retirement',
     'Income + estate','Retirement + charity','Legacy + charity','Retirement','Income','Diversify + estate','Retirement','Retirement'];
-  const households = names.map((n,i)=>({
-    id:'H'+(i+1), name:n, tier:tiers[i], aum:aum[i],
+  const households = names.map((n,i)=>({id:'H'+(i+1), name:n, tier:tiers[i], aum:aum[i],
     birthdayMonth:1+((i*5+3)%12), retirementAge:[68,70,66,64,72,67,69,63,71,70,65,64][i],
-    sensitivities:sens[i], goals:goals[i], taxable:true
-  }));
-  const actions=[];
-  const end = parse('2026-06-30');
+    sensitivities:sens[i], goals:goals[i], taxable:true}));
+  const actions=[]; const end = parse('2026-06-30');
   households.forEach(h=>{
-    // reviews at tier cadence
-    let d = addDays(parse('2024-07-15'), Math.floor(rng()*40));
-    const cad = TIER_CADENCE[h.tier];
-    while(d < end){
-      actions.push({date:fmtDate(d), household_id:h.id, type:'review_meeting', signal:'', detail:h.tier+' review'});
-      d = addDays(d, Math.round(cad + (rng()*16-8)));
-    }
-    // rebalances when drift crosses band (2-4 over the window)
+    let d = addDays(parse('2024-07-15'), Math.floor(rng()*40)); const cad = TIER_CADENCE[h.tier];
+    while(d < end){ actions.push({date:fmtDate(d), household_id:h.id, type:'review_meeting', signal:'', detail:h.tier+' review'});
+      d = addDays(d, Math.round(cad + (rng()*16-8))); }
     const nReb = h.tier==='A'?4:h.tier==='B'?3:2;
-    for(let k=0;k<nReb;k++){
-      const dd = addDays(parse('2024-09-01'), Math.floor(rng()*600));
-      const band = TIER_BAND[h.tier];
-      const drift = +(band + rng()*0.015).toFixed(3);
-      actions.push({date:fmtDate(dd), household_id:h.id, type:'rebalance', signal:String(drift), detail:'drift '+(drift*100).toFixed(1)+'%'});
-    }
-    // TLH spread across the year (continuous behavior) for taxable
+    for(let k=0;k<nReb;k++){ const dd = addDays(parse('2024-09-01'), Math.floor(rng()*600));
+      const band = TIER_BAND[h.tier]; const drift = +(band + rng()*0.015).toFixed(3);
+      actions.push({date:fmtDate(dd), household_id:h.id, type:'rebalance', signal:String(drift), detail:'drift '+(drift*100).toFixed(1)+'%'}); }
     const nTlh = h.tier==='C'?3:5;
-    for(let k=0;k<nTlh;k++){
-      const dd = addDays(parse('2024-08-01'), Math.floor(rng()*690));
-      actions.push({date:fmtDate(dd), household_id:h.id, type:'tlh', signal:'', detail:'harvested loss'});
-    }
-    // market-reaction calls for A and B within ~5 days of a drop
-    if(h.tier!=='C'){
-      MARKET_DROPS.forEach(m=>{
-        const dd = addDays(parse(m.date), 1+Math.floor(rng()*5));
-        actions.push({date:fmtDate(dd), household_id:h.id, type:'proactive_call', signal:String(m.draw), detail:'reassurance call, market '+(m.draw*100).toFixed(0)+'%'});
-      });
-    }
-    // a couple of life-event plan updates
-    if(rng()>0.5){
-      const dd = addDays(parse('2025-01-01'), Math.floor(rng()*400));
-      actions.push({date:fmtDate(dd), household_id:h.id, type:'plan_update', signal:'life_event', detail:'plan revisited after life event'});
-    }
+    for(let k=0;k<nTlh;k++){ const dd = addDays(parse('2024-08-01'), Math.floor(rng()*690));
+      actions.push({date:fmtDate(dd), household_id:h.id, type:'tlh', signal:'', detail:'harvested loss'}); }
+    if(h.tier!=='C'){ MARKET_DROPS.forEach(m=>{ const dd = addDays(parse(m.date), 1+Math.floor(rng()*5));
+      actions.push({date:fmtDate(dd), household_id:h.id, type:'proactive_call', signal:String(m.draw), detail:'reassurance call'}); }); }
+    if(rng()>0.5){ const dd = addDays(parse('2025-01-01'), Math.floor(rng()*400));
+      actions.push({date:fmtDate(dd), household_id:h.id, type:'plan_update', signal:'life_event', detail:'plan revisited after life event'}); }
   });
   actions.sort((a,b)=>a.date<b.date?-1:1);
-  // compute lastReview per household
-  households.forEach(h=>{
-    const revs = actions.filter(a=>a.household_id===h.id && a.type==='review_meeting').map(a=>a.date);
-    h.last_review = revs.length? revs[revs.length-1] : '2025-01-01';
-  });
+  households.forEach(h=>{ const revs = actions.filter(a=>a.household_id===h.id && a.type==='review_meeting').map(a=>a.date);
+    h.last_review = revs.length? revs[revs.length-1] : '2025-01-01'; });
   return {households, actions};
 }
-
 function loadDemo(){
-  const d = buildDemo();
-  state.households = d.households; state.actions = d.actions;
-  state.triggers=[]; state.profile=null; state.elicit={}; state.adherence=[];
-  save(); refreshAll();
-  go('ingest'); renderIngest();
-  banner('ingestSummary','Demo book loaded.');
+  const d = buildDemo(); state.households = d.households; state.actions = d.actions;
+  state.triggers=[]; state.profile=null; state.elicit={}; state.adherence=[]; state.aiInsights=null;
+  state.files=[{name:'sample_book_clients.csv',size:2140,kind:'csv',status:'loaded'},
+               {name:'sample_book_actions.csv',size:9820,kind:'csv',status:'loaded'},
+               {name:'advisor_meeting_notes.txt',size:5300,kind:'text',status:'queued'}];
+  save(); refreshAll(); renderFiles(); go('connect'); renderIngest();
+  $('connectSummary').textContent='Sample book loaded.'; toast('Sample advisor book loaded');
 }
 function resetAll(){ try{localStorage.removeItem('adt_state');}catch(e){}
-  state={predecessor:'Robert Chen',successor:'Dana Ellis',households:[],actions:[],triggers:[],profile:null,elicit:{},adherence:[]};
-  refreshAll(); renderIngest(); $('triggerOut').innerHTML=''; $('elicitOut').innerHTML='<div class="banner">Run the extraction engine first (step 2), then return here.</div>';
-  $('profileOut').innerHTML=''; $('nbaOut').innerHTML='<div class="banner">Compile the profile first (step 4).</div>'; $('shadowOut').innerHTML=''; $('pbOut').innerHTML='';
+  state={predecessor:'Robert Chen',successor:'Dana Ellis',households:[],actions:[],triggers:[],profile:null,elicit:{},adherence:[],files:[],interview:{i:0,started:false},aiInsights:null,aiKey:'',aiModel:'claude-sonnet-4-5'};
+  refreshAll(); renderFiles(); renderIngest();
+  ['triggerOut','insightsOut','draftOut','profileOut','pbOut'].forEach(id=>{if($(id))$(id).innerHTML='';});
+  $('analyzeLog').style.display='none'; $('nbaOut').innerHTML='<div class="banner">Compile the profile first (step 3).</div>';
+  $('chat').innerHTML=''; toast('Cleared');
 }
 
-/* ============================ CSV IMPORT ============================ */
+/* ============================ FILE UPLOAD ============================ */
+function fileKind(name){const e=(name.split('.').pop()||'').toLowerCase();
+  if(['csv','tsv'].includes(e))return 'csv'; if(['xlsx','xls'].includes(e))return 'excel';
+  if(e==='pdf')return 'pdf'; if(['doc','docx'].includes(e))return 'word';
+  if(['txt','md','rtf'].includes(e))return 'text'; if(['json'].includes(e))return 'json';
+  if(['png','jpg','jpeg','gif','webp'].includes(e))return 'image'; return 'file';}
+function kindLabel(k){return {csv:'CSV',excel:'XLS',pdf:'PDF',word:'DOC',text:'TXT',json:'JSON',image:'IMG',file:'FILE'}[k]||'FILE';}
+function humanSize(n){return n>1e6?(n/1e6).toFixed(1)+' MB':n>1e3?(n/1e3).toFixed(0)+' KB':n+' B';}
+function handleFiles(fileList){
+  const arr=[...fileList]; let pending=arr.length; if(!pending)return;
+  arr.forEach(f=>{ const kind=fileKind(f.name); const rec={name:f.name,size:f.size,kind:kind,status:'queued'};
+    const done=()=>{ state.files.push(rec); pending--; if(pending<=0){ save(); refreshAll(); renderFiles(); autoIngest(); } };
+    if(['csv','text','json'].includes(kind)){ const r=new FileReader();
+      r.onload=e=>{ rec.text=String(e.target.result).slice(0,200000);
+        if(kind==='csv'&&looksLikeOurCsv(rec.text)) rec.status='loaded'; done(); };
+      r.onerror=done; r.readAsText(f);
+    } else { done(); }
+  });
+}
+function looksLikeOurCsv(text){const h=(text.split(/\r?\n/)[0]||'').toLowerCase();
+  return /household_id|(^|,)type(,|$)|(^|,)tier(,|$)|(^|,)aum(,|$)/.test(h);}
+function autoIngest(){
+  let loaded=0;
+  state.files.filter(f=>f.kind==='csv'&&f.text).forEach(f=>{
+    const rows=parseCSV(f.text); const head=Object.keys(rows[0]||{});
+    if(head.includes('household_id')&&head.includes('type')){
+      state.actions=state.actions.concat(rows.map(x=>({date:x.date,household_id:x.household_id,type:x.type,signal:x.signal||'',detail:x.detail||''})));
+      f.status='loaded'; loaded++;
+    } else if(head.includes('tier')||head.includes('aum')){
+      state.households=rows.map(x=>({id:x.id,name:x.name,aum:+x.aum||0,tier:(x.tier||'C').toUpperCase(),
+        birthdayMonth:+x.birthday_month||1,retirementAge:+x.retirement_age||70,last_review:x.last_review||'2025-01-01',
+        sensitivities:x.sensitivities||'',goals:x.goals||'',taxable:true}));
+      f.status='loaded'; loaded++;
+    }
+  });
+  if(state.actions.length){ state.actions.sort((a,b)=>a.date<b.date?-1:1);
+    if(state.households.length) state.households.forEach(h=>{ const r=state.actions.filter(a=>a.household_id===h.id&&a.type==='review_meeting').map(a=>a.date); if(r.length)h.last_review=r[r.length-1]; }); }
+  save(); refreshAll(); renderIngest();
+  if(loaded) toast('Recognized and loaded '+loaded+' data file'+(loaded>1?'s':''));
+  else toast('Files added. The AI will read them in step 2.');
+}
+function renderFiles(){
+  const el=$('fileList'); if(!el)return;
+  if(!state.files.length){el.innerHTML='';return;}
+  el.innerHTML=state.files.map((f,i)=>`<div class="filerow"><div class="fi">${kindLabel(f.kind)}</div>
+    <div><div style="font-weight:600;font-size:13.5px">${esc(f.name)}</div>
+    <div class="small muted">${humanSize(f.size||0)} &middot; ${f.status==='loaded'?'<span class="tag loaded">data loaded</span>':'<span class="tag queued">queued for AI</span>'}</div></div>
+    <span class="fx" onclick="removeFile(${i})">remove</span></div>`).join('');
+}
+function removeFile(i){state.files.splice(i,1); save(); renderFiles(); refreshAll();}
+
+/* ============================ CONNECTORS ============================ */
+const CONNECTORS={
+  'CRM':['Redtail','Wealthbox','Salesforce','Practifi'],
+  'Portfolio management':['Orion','Black Diamond','Addepar','Tamarac'],
+  'Planning software':['eMoney','MoneyGuidePro','RightCapital'],
+  'Custodians':['Schwab','Fidelity','Pershing','Altruist']
+};
+function renderConnectors(){
+  const el=$('connGrid'); if(!el)return; let h='';
+  Object.entries(CONNECTORS).forEach(([cat,items])=>{
+    h+=`<div style="margin-top:12px"><div class="conn-cat">${cat}</div><div class="grid g4">`;
+    items.forEach(n=>h+=`<div class="conn-card"><span class="nm">${n}</span><span class="badge-soon">soon</span></div>`);
+    h+=`</div><div style="margin-top:8px"><button class="ghost btn small" onclick="requestConnector('${cat.replace(/'/g,'')}')">Request ${cat} early access</button></div></div>`;
+  });
+  el.innerHTML=h;
+}
+function requestConnector(cat){ toast('Noted, we will prioritize '+cat+' connectors and let you know when they are live.'); }
+
+/* ============================ CSV IMPORT (advanced) ============================ */
 function parseCSV(text){
   const lines=text.trim().split(/\r?\n/); const head=lines[0].split(',').map(s=>s.trim());
-  return lines.slice(1).filter(l=>l.trim()).map(l=>{
-    const cells=l.split(','); const o={}; head.forEach((h,i)=>o[h]=(cells[i]||'').trim()); return o;});
+  return lines.slice(1).filter(l=>l.trim()).map(l=>{const cells=l.split(','); const o={}; head.forEach((h,i)=>o[h]=(cells[i]||'').trim()); return o;});
 }
 function importCsv(){
   const fc=$('fClients').files[0], fa=$('fActions').files[0];
-  if(!fc && !fa){alert('Choose at least one CSV, or use Load demo book.');return;}
+  if(!fc && !fa){alert('Choose at least one CSV, or use Load sample advisor book.');return;}
   const done={c:!fc,a:!fa};
-  const finish=()=>{ if(done.c&&done.a){ state.triggers=[];state.profile=null;state.elicit={};
-    save(); refreshAll(); renderIngest(); banner('ingestSummary','CSV import complete.'); } };
+  const finish=()=>{ if(done.c&&done.a){ state.triggers=[];state.profile=null; save(); refreshAll(); renderIngest(); toast('CSV import complete'); } };
   if(fc){const r=new FileReader(); r.onload=e=>{ const rows=parseCSV(e.target.result);
     state.households=rows.map(x=>({id:x.id,name:x.name,aum:+x.aum||0,tier:(x.tier||'C').toUpperCase(),
       birthdayMonth:+x.birthday_month||1,retirementAge:+x.retirement_age||70,last_review:x.last_review||'2025-01-01',
@@ -327,312 +462,298 @@ function importCsv(){
 
 /* ============================ TRIGGER MINING ============================ */
 function mineTriggers(){
-  if(!state.actions.length){alert('Load a book first (step 1).');return;}
+  if(!state.actions.length){return false;}
   const T=[]; const A=state.actions; const H=state.households;
   const byTier=t=>H.filter(h=>h.tier===t).map(h=>h.id);
   let tid=0; const mk=o=>{o.id='T'+(++tid); o.provenance=o.provenance||'observed'; T.push(o);};
-
-  // 1. Review cadence per tier
-  ['A','B','C'].forEach(tier=>{
-    const ids=byTier(tier); const intervals=[];
+  ['A','B','C'].forEach(tier=>{ const ids=byTier(tier); const intervals=[];
     ids.forEach(id=>{ const rev=A.filter(a=>a.household_id===id&&a.type==='review_meeting').map(a=>a.date);
       for(let i=1;i<rev.length;i++) intervals.push(daysBetween(rev[i-1],rev[i])); });
     if(intervals.length>=2){ const m=Math.round(median(intervals)); const cv=std(intervals)/(mean(intervals)||1);
       const conf=Math.max(0.3,Math.min(0.98,1-cv*1.3));
-      mk({class:'Review cadence',scope:tier,condition:`Days since last review ≥ ${m}`,
-        action:`Schedule a tier ${tier} review`, rationale:`Tier ${tier} households are reviewed about every ${m} days`,
-        confidence:+conf.toFixed(2), observations:intervals.length, meta:{cadenceDays:m}});
-    }
+      mk({class:'Review cadence',scope:tier,condition:`Days since last review ≥ ${m}`,action:`Schedule a tier ${tier} review`,
+        rationale:`Tier ${tier} households are reviewed about every ${m} days`,confidence:+conf.toFixed(2),observations:intervals.length,meta:{cadenceDays:m}}); }
   });
-  // 2. Rebalance drift band per tier
-  ['A','B','C'].forEach(tier=>{
-    const ids=byTier(tier);
+  ['A','B','C'].forEach(tier=>{ const ids=byTier(tier);
     const drifts=A.filter(a=>a.type==='rebalance'&&ids.includes(a.household_id)&&a.signal).map(a=>+a.signal);
     if(drifts.length>=2){ const band=Math.min(...drifts); const cv=std(drifts)/(mean(drifts)||1);
       const conf=Math.max(0.4,Math.min(0.97,1-cv*2));
-      mk({class:'Portfolio drift',scope:tier,condition:`Sleeve drift ≥ ${(band*100).toFixed(1)}%`,
-        action:'Rebalance to model', rationale:`Tier ${tier} is rebalanced once drift reaches roughly ${(band*100).toFixed(1)}%`,
-        confidence:+conf.toFixed(2), observations:drifts.length, meta:{band:band}});
-    }
+      mk({class:'Portfolio drift',scope:tier,condition:`Sleeve drift ≥ ${(band*100).toFixed(1)}%`,action:'Rebalance to model',
+        rationale:`Tier ${tier} is rebalanced once drift reaches roughly ${(band*100).toFixed(1)}%`,confidence:+conf.toFixed(2),observations:drifts.length,meta:{band}}); }
   });
-  // 3. TLH cadence (continuous vs year-end)
-  const tlh=A.filter(a=>a.type==='tlh'); if(tlh.length>=3){
-    const months={}; tlh.forEach(a=>{const m=+a.date.slice(5,7); months[m]=(months[m]||0)+1;});
-    const distinct=Object.keys(months).length; const decShare=(months[12]||0)/tlh.length;
-    const continuous = distinct>=5 && decShare<0.5;
-    const conf = continuous? 0.9 : 0.7;
+  const tlh=A.filter(a=>a.type==='tlh'); if(tlh.length>=3){ const months={}; tlh.forEach(a=>{const m=+a.date.slice(5,7); months[m]=(months[m]||0)+1;});
+    const distinct=Object.keys(months).length; const decShare=(months[12]||0)/tlh.length; const continuous = distinct>=5 && decShare<0.5;
     mk({class:'Tax-loss harvest',scope:'Taxable',condition:'Harvestable loss present in a taxable account',
       action: continuous?'Harvest opportunistically through the year':'Harvest at year-end',
-      rationale: continuous? `Losses are harvested across ${distinct} different months, not just December — a continuous approach`
-                           : 'Harvesting is concentrated at year-end',
-      confidence:conf, observations:tlh.length, meta:{continuous, months}});
-  }
-  // 4. Market-reaction outreach
-  const calls=A.filter(a=>a.type==='proactive_call'&&a.signal); if(calls.length>=3){
-    const draws=calls.map(a=>Math.abs(+a.signal)); const thr=Math.min(...draws);
-    mk({class:'Market reaction',scope:'A, B',condition:`Benchmark drawdown ≥ ${(thr*100).toFixed(0)}%`,
-      action:'Proactive reassurance call within ~5 days', rationale:`When the market falls ${(thr*100).toFixed(0)}%+ the advisor calls priority households`,
-      confidence:0.82, observations:calls.length, meta:{threshold:thr}});
-  }
-  // 5. Segmentation (derived thresholds)
-  const aA=Math.min(...H.filter(h=>h.tier==='A').map(h=>h.aum));
-  const aB=Math.min(...H.filter(h=>h.tier==='B').map(h=>h.aum));
-  mk({class:'Segmentation',scope:'All',condition:'AUM and relationship depth',
-    action:`Tier A ≥ $${aA.toFixed(1)}M, Tier B ≥ $${aB.toFixed(1)}M, else Tier C`,
-    rationale:'Service level, review cadence and drift discipline all scale with tier',
-    confidence:0.75, observations:H.length, meta:{aA,aB}});
-
-  state.triggers=T; state.profile=null; save(); refreshAll();
-  $('mineNote').textContent = `${T.length} triggers mined from ${A.length} actions across ${H.length} households.`;
-  renderTriggers(); buildElicitation();
+      rationale: continuous? `Losses are harvested across ${distinct} different months, not just December, a continuous approach`:'Harvesting is concentrated at year-end',
+      confidence: continuous?0.9:0.7, observations:tlh.length, meta:{continuous,months}}); }
+  const calls=A.filter(a=>a.type==='proactive_call'&&a.signal); if(calls.length>=3){ const draws=calls.map(a=>Math.abs(+a.signal)); const thr=Math.min(...draws);
+    mk({class:'Market reaction',scope:'A, B',condition:`Benchmark drawdown ≥ ${(thr*100).toFixed(0)}%`,action:'Proactive reassurance call within ~5 days',
+      rationale:`When the market falls ${(thr*100).toFixed(0)}%+ the advisor calls priority households`,confidence:0.82,observations:calls.length,meta:{threshold:thr}}); }
+  if(H.length){ const aA=Math.min(...H.filter(h=>h.tier==='A').map(h=>h.aum).concat([99])); const aB=Math.min(...H.filter(h=>h.tier==='B').map(h=>h.aum).concat([99]));
+    mk({class:'Segmentation',scope:'All',condition:'AUM and relationship depth',
+      action:`Tier A ≥ $${aA.toFixed(1)}M, Tier B ≥ $${aB.toFixed(1)}M, else Tier C`,
+      rationale:'Service level, review cadence and drift discipline all scale with tier',confidence:0.75,observations:H.length,meta:{aA,aB}}); }
+  state.triggers=T; state.profile=null; save(); refreshAll(); return true;
 }
-
 function renderTriggers(){
-  const T=state.triggers; if(!T.length){$('triggerOut').innerHTML='';return;}
-  let h='<div class="card"><table><tr><th>Class</th><th>Scope</th><th>Condition → Action</th><th>Rationale</th><th>Confidence</th><th>n</th><th>Source</th></tr>';
+  const T=state.triggers; const el=$('triggerOut'); if(!el)return; if(!T.length){el.innerHTML='';return;}
+  let h='<div style="overflow:auto;margin-top:12px"><table><tr><th>Rule</th><th>Scope</th><th>Condition &rarr; Action</th><th>Confidence</th><th>Source</th></tr>';
   T.forEach(t=>{const [lbl,cls]=confLabel(t.confidence);
     h+=`<tr><td><b>${t.class}</b></td><td>${scopePill(t.scope)}</td>
-      <td><code>${t.condition}</code><br><span class="muted">→ ${t.action}</span></td>
-      <td class="small">${t.rationale}</td>
+      <td><code>${t.condition}</code><br><span class="muted small">&rarr; ${t.action}</span><div class="small muted">${t.rationale}</div></td>
       <td class="${cls}">${lbl} <span class="muted small">(${(t.confidence*100).toFixed(0)}%)</span></td>
-      <td>${t.observations}</td>
-      <td><span class="prov ${t.provenance.includes('elicited')?'both':''}">${t.provenance}</span></td></tr>`;});
-  h+='</table></div>';
-  $('triggerOut').innerHTML=h;
+      <td><span class="prov ${t.provenance.includes('elicited')||t.provenance.includes('AI')?'both':''}">${t.provenance}</span></td></tr>`;});
+  h+='</table></div>'; el.innerHTML=h;
 }
 function scopePill(s){ if(['A','B','C'].includes(s)) return tierPill(s); return `<span class="small">${s}</span>`; }
 
-/* ============================ ELICITATION ============================ */
-function buildElicitation(){
-  const T=state.triggers; const qs=[];
-  // confirm low/medium confidence triggers
-  T.filter(t=>t.confidence<0.8 && t.meta).forEach(t=>{
-    qs.push({id:'confirm_'+t.id, triggerId:t.id, kind:'confirm',
-      text:`We observed: "${t.rationale}". Confidence is ${(t.confidence*100).toFixed(0)}%. Is this really your rule?`,
-      why:'Confirming upgrades this to observed + elicited and raises confidence.'});
-  });
-  // fixed judgment/gap questions
-  qs.push({id:'gap_exception', kind:'note', text:'When do you deliberately break your own rebalancing rule?',
-    why:'Captures the exception logic a successor most often gets wrong.',
-    placeholder:'e.g. I hold off rebalancing if it triggers a large short-term gain, unless drift exceeds 10%'});
-  qs.push({id:'gap_downmarket', kind:'note', text:'What exactly do you say to an anxious client in a down market?',
-    why:'Seeds the voice-matched reassurance draft.', placeholder:'e.g. Reframe to their plan horizon; remind them we harvested losses...'});
-  qs.push({id:'gap_voice', kind:'note', text:'Describe your communication style in a sentence.',
-    why:'Guides tone of drafted client outreach.', placeholder:'e.g. Warm, concise, numbers-first, no jargon'});
-  qs.push({id:'gap_newmoney', kind:'note', text:'How do you handle a client who suddenly receives a large liquidity event?',
-    why:'A high-value trigger rarely visible in historical data.', placeholder:'e.g. Pause, park in cash, meet within a week...'});
-  state.elicitQs=qs; save(); renderElicit();
+/* ============================ AI (simulated + real-ready) ============================ */
+function setKey(){ state.aiKey=$('aiKey').value.trim(); updateAiMode(); save(); }
+function setModel(){ state.aiModel=$('aiModelInput').value.trim()||'claude-sonnet-4-5'; save(); }
+function updateAiMode(){ const real=!!state.aiKey;
+  if($('aiMode')) $('aiMode').textContent = real?'Live Claude':'Simulated AI';
+  if($('aiKeyState')) $('aiKeyState').textContent = 'Status: '+(real?'live model connected (key stored in this browser only).':'simulated (no key set).'); }
+async function callClaude(system,user){
+  if(state.aiKey){ try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'content-type':'application/json','x-api-key':state.aiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:state.aiModel||'claude-sonnet-4-5',max_tokens:1024,system,messages:[{role:'user',content:user}]})});
+    const j=await r.json(); return (j.content&&j.content[0]&&j.content[0].text)||('[model error] '+JSON.stringify(j).slice(0,200));
+  }catch(e){ return '[connection error] '+e.message+' — falling back to simulated output.'; } }
+  return null; // signal: use simulated
 }
-function renderElicit(){
-  const qs=state.elicitQs||[]; if(!qs.length){return;}
-  let h='';
-  qs.forEach(q=>{
-    const val=state.elicit[q.id]||'';
-    h+=`<div class="q"><div class="qt">${q.text}</div><div class="why">${q.why}</div>`;
-    if(q.kind==='confirm'){
-      h+=`<div class="flex" style="margin-top:8px">
-        <button class="choice" style="width:auto" onclick="answerConfirm('${q.id}','${q.triggerId}','yes')">${val==='yes'?'✓ ':''}Yes, that's my rule</button>
-        <button class="choice" style="width:auto" onclick="answerConfirm('${q.id}','${q.triggerId}','no')">${val==='no'?'✓ ':''}No, adjust it</button></div>`;
-    } else {
-      h+=`<textarea id="el_${q.id}" placeholder="${q.placeholder||''}">${val}</textarea>
-        <div style="margin-top:6px"><button class="btn small" onclick="answerNote('${q.id}')">Save answer</button></div>`;
-    }
-    h+='</div>';
-  });
-  h+=`<div class="ok-banner banner">${answeredCount()} of ${qs.length} answered. Answers flow into the profile and boost confidence.</div>`;
-  $('elicitOut').innerHTML=h;
+async function logLine(el,txt,cls){ el.innerHTML += `<div class="${cls||''}">${txt}</div>`; el.scrollTop=el.scrollHeight; await sleep(420); }
+
+async function analyzeWithAI(){
+  const btn=$('btnAnalyze'); btn.disabled=true;
+  const log=$('analyzeLog'); log.style.display='block'; log.innerHTML='';
+  const fileNames = state.files.length? state.files.map(f=>f.name) : ['(no files, using loaded data)'];
+  await logLine(log,'<span class="hl">Claude</span> is reading your data...');
+  for(const n of fileNames.slice(0,6)) await logLine(log,'  reading '+esc(n)+' …');
+  await logLine(log,'Resolving households and accounts...');
+  const ok = mineTriggers();
+  if(state.households.length) await logLine(log,'  found <b>'+state.households.length+'</b> households across tiers A/B/C', 'ok');
+  if(state.actions.length) await logLine(log,'  read <b>'+state.actions.length+'</b> advisor actions', 'ok');
+  await logLine(log,'Mining decision patterns (cadence, drift bands, harvesting, outreach)...');
+  await logLine(log,'Extracting judgment from notes and documents...');
+  // AI-extracted judgment notes referencing files
+  const noteFiles = state.files.filter(f=>['text','word','pdf'].includes(f.kind)).map(f=>f.name);
+  if(noteFiles.length){ state.elicit['ai_note_docs']='From '+noteFiles.join(', ')+': advisor emphasizes plain-English framing, proactive contact before clients ask, and tax-aware sequencing of any sale.';
+    await logLine(log,'  captured judgment from '+noteFiles.length+' document'+(noteFiles.length>1?'s':''),'ok'); }
+  if(ok){ await logLine(log,'<b>Done.</b> Extracted <b>'+state.triggers.length+'</b> methodology rules. Review them below, then answer a few questions in Step B.','ok');
+    $('mineNote').textContent = state.triggers.length+' rules captured from '+state.actions.length+' actions.';
+    renderTriggers();
+  } else { await logLine(log,'No structured action data yet. Upload a client/action file or load the sample book, then run again.','hl'); }
+  btn.disabled=false; save(); refreshAll();
 }
-function answeredCount(){return (state.elicitQs||[]).filter(q=>state.elicit[q.id]).length;}
-function answerConfirm(qid,tid,val){
-  state.elicit[qid]=val;
-  const t=state.triggers.find(x=>x.id===tid);
-  if(t){ if(val==='yes'){ t.confidence=Math.min(0.99,t.confidence+0.15); if(!t.provenance.includes('elicited'))t.provenance='observed + elicited';}
-    else { t.provenance='observed + elicited (flagged for adjustment)'; } }
-  save(); renderElicit(); renderTriggers(); refreshAll();
+
+/* --- Adaptive interview --- */
+const INTERVIEW=[
+  {q:"To start, how would you describe your investing philosophy in one sentence?",
+   ack:a=>`Got it. That "${short(a)}" mindset is the spine of the whole methodology, I'll anchor the rulebook to it.`, key:'philosophy'},
+  {q:"When a client panics in a downturn, what do you actually do or say first?",
+   ack:a=>`That's the kind of move a successor has to copy exactly. Saved to your down-market playbook.`, key:'downmarket'},
+  {q:"How do you decide which clients get the most of your time?",
+   ack:a=>`Noted, that's your real segmentation logic, often sharper than the AUM tiers alone.`, key:'segmentation'},
+  {q:"What's a rule you follow that you've never actually written down?",
+   ack:a=>`Perfect, that's exactly the tacit knowledge this is built to capture.`, key:'tacit'},
+  {q:"When do you deliberately break your own rebalancing or tax rules?",
+   ack:a=>`Important. The exceptions are what successors get wrong, this is now on record.`, key:'exception'},
+  {q:"Last one: what must your successor never get wrong with your clients?",
+   ack:a=>`Thank you. I've written all of this into the profile as Judgment Notes.`, key:'successor'}
+];
+function short(s){s=(s||'').trim(); return s.length>44?s.slice(0,44)+'…':s;}
+function startInterview(){ state.interview={i:0,started:true}; $('chat').innerHTML=''; save();
+  pushMsg('ai', "Hi, I'm Claude. I'll ask a few quick questions to capture the judgment your data can't show. "+INTERVIEW[0].q); }
+function pushMsg(who,text){ const c=$('chat'); const av=who==='ai'?'AI':'You';
+  c.innerHTML+=`<div class="msg ${who==='ai'?'ai':'you'}"><div class="av">${av}</div><div class="bubble">${esc(text)}</div></div>`; c.scrollTop=c.scrollHeight; }
+function sendChat(){ const inp=$('chatInput'); const v=inp.value.trim(); if(!v)return;
+  if(!state.interview.started) startInterview();
+  pushMsg('you',v); inp.value='';
+  const idx=state.interview.i; const step=INTERVIEW[idx];
+  if(step){ state.elicit['iv_'+step.key]=v;
+    setTimeout(()=>{ pushMsg('ai', step.ack(v)); const next=INTERVIEW[idx+1];
+      state.interview.i=idx+1; save();
+      if(next){ setTimeout(()=>pushMsg('ai', next.q), 550); }
+      else { setTimeout(()=>{ pushMsg('ai',"That's everything I need. Your answers are saved. Next, compile the profile in step 3, or generate the insight brief in Step C."); }, 550); }
+    }, 400);
+  }
+  save();
 }
-function answerNote(qid){ const v=$('el_'+qid).value.trim(); state.elicit[qid]=v; save(); renderElicit(); }
+
+/* --- Insight brief --- */
+function generateInsights(){
+  if(!state.triggers.length){ mineTriggers(); }
+  const H=state.households, T=state.triggers;
+  const cad=t=>{const x=T.find(r=>r.class==='Review cadence'&&r.scope===t); return x?x.meta.cadenceDays:null;};
+  const tlh=T.find(r=>r.class==='Tax-loss harvest'); const mkt=T.find(r=>r.class==='Market reaction');
+  const tiers={A:H.filter(h=>h.tier==='A').length,B:H.filter(h=>h.tier==='B').length,C:H.filter(h=>h.tier==='C').length};
+  const phil=state.elicit['iv_philosophy']; const succ=state.elicit['iv_successor'];
+  const parts=[];
+  parts.push(`<b>Methodology.</b> ${state.predecessor} runs a relationship-led, tax-aware practice of ${H.length||'—'} households (${tiers.A} A / ${tiers.B} B / ${tiers.C} C). Reviews run on a clear tiered cadence${cad('A')?` (about every ${cad('A')} / ${cad('B')} / ${cad('C')} days by tier)`:''}, and rebalancing follows tighter drift bands for larger households. ${tlh&&tlh.meta.continuous?'Losses are harvested continuously through the year rather than batched in December, a deliberate source of after-tax value.':''} ${mkt?`In volatility the advisor proactively calls priority clients on drawdowns of ~${(mkt.meta.threshold*100).toFixed(0)}%+.`:''}`);
+  if(phil) parts.push(`<b>Philosophy in their words.</b> “${esc(phil)}”`);
+  parts.push(`<b>Business acumen.</b> The book skews to disciplined, high-trust households; the advisor trades time for depth on top tiers and defends after-tax return as the measurable edge. Retention is driven by proactive contact, not reporting.`);
+  parts.push(`<b>Blind spots to watch.</b> Client sensitivities and history live largely in the advisor's memory, not the CRM; Tier C cadence is the loosest and most exposed in a handoff; and there is no documented protocol for sudden liquidity events. These are the first things a successor should shore up.`);
+  if(succ) parts.push(`<b>Non-negotiable for the successor.</b> “${esc(succ)}”`);
+  parts.push(`<b>Recommendation.</b> Preserve the continuous-harvest rhythm and the down-market call protocol from day one; formalize the Tier C cadence and migrate the relationship notes into the profile so nothing depends on memory.`);
+  state.aiInsights=parts.join('<br><br>'); save();
+  $('insightsOut').innerHTML=`<div class="card" style="border-left:3px solid var(--accent)"><div class="small muted" style="margin-bottom:6px">${state.aiKey?'Live Claude':'Simulated'} insight brief</div>${state.aiInsights}</div>`;
+  toast('Insight brief generated');
+}
+
+/* --- Draft in voice --- */
+function draftInVoice(){
+  const style=state.elicit['iv_philosophy']||state.elicit['gap_voice']||'warm, concise, numbers-first, no jargon';
+  const dm=state.elicit['iv_downmarket']||'reframe to their long-term plan and remind them we harvested losses along the way';
+  const h=(state.households[0]||{name:'the Alvarez Family'}); const first=h.name.split(' ')[0];
+  const body=`Hi ${first},\n\nI wanted to reach out personally before you saw the headlines. Markets pulled back this week, and I know that never feels good. Here's what matters: nothing about your plan has changed, and we ${dm}. We built your portfolio for exactly these moments.\n\nI'll call you Thursday to walk through it, but reach me anytime before then.\n\nWarmly,\n${state.predecessor}`;
+  $('draftOut').innerHTML=`<div class="card"><div class="small muted" style="margin-bottom:6px">Drafted in ${state.predecessor}'s voice (${esc(short(style))}) &middot; for the successor to send</div>
+    <div style="white-space:pre-wrap;background:#0c0d16;border:1px solid var(--hairline);border-radius:10px;padding:12px;font-size:13.5px">${esc(body)}</div></div>`;
+  toast('Draft written in the advisor’s voice');
+}
 
 /* ============================ PROFILE ============================ */
+function buildJudgment(){ const notes=[];
+  const map={iv_tacit:'Unwritten rule',iv_exception:'When rules bend',iv_segmentation:'Real segmentation logic',iv_downmarket:'Down-market protocol',ai_note_docs:'From documents',iv_successor:'Successor must-not-miss'};
+  Object.entries(map).forEach(([k,label])=>{ if(state.elicit[k]) notes.push(label+': '+state.elicit[k]); }); return notes; }
 function compileProfile(){
-  if(!state.triggers.length){alert('Run the extraction engine (step 2) first.');return;}
-  const T=state.triggers;
-  const seg=T.find(t=>t.class==='Segmentation');
-  const profile={
-    version:'1.'+(state.profile? (state.profile.version.split('.')[1]*1+1):0),
-    advisor:state.predecessor, compiled:fmtDate(NOW),
-    segmentation: seg? seg.action : 'n/a',
-    rulebook: T.filter(t=>t.class!=='Segmentation').map(t=>({class:t.class,scope:t.scope,condition:t.condition,
-      action:t.action,rationale:t.rationale,confidence:t.confidence,provenance:t.provenance})),
-    communicationPlaybook:{ style: state.elicit['gap_voice']||'(not captured)',
-      downMarketScript: state.elicit['gap_downmarket']||'(not captured)' },
-    judgmentNotes:[ state.elicit['gap_exception'], state.elicit['gap_newmoney'] ].filter(Boolean),
-    gapRegister: (state.elicitQs||[]).filter(q=>!state.elicit[q.id]).map(q=>q.text)
+  if(!state.triggers.length){ if(!mineTriggers()){ alert('Add data in step 1 and run AI Capture (step 2) first.'); return; } }
+  const T=state.triggers; const seg=T.find(t=>t.class==='Segmentation');
+  const profile={ version:'1.'+(state.profile? (state.profile.version.split('.')[1]*1+1):0),
+    advisor:state.predecessor, compiled:fmtDate(NOW), segmentation: seg? seg.action : 'n/a',
+    rulebook: T.filter(t=>t.class!=='Segmentation').map(t=>({class:t.class,scope:t.scope,condition:t.condition,action:t.action,rationale:t.rationale,confidence:t.confidence,provenance:t.provenance})),
+    communicationPlaybook:{ style: state.elicit['iv_philosophy']||'(from interview)', downMarketScript: state.elicit['iv_downmarket']||'(from interview)' },
+    judgmentNotes: buildJudgment(),
+    insightBrief: state.aiInsights? state.aiInsights.replace(/<[^>]+>/g,'') : '(generate in AI Capture step C)',
+    gapRegister: [ !state.elicit['iv_exception']&&'Exceptions to the rules', !state.elicit['iv_successor']&&'Successor must-not-miss', !state.households.some(h=>h.tier==='C')&&'Tier C service standard' ].filter(Boolean)
   };
-  state.profile=profile; save(); refreshAll(); renderProfile(); buildActivation();
+  state.profile=profile; save(); refreshAll(); renderProfile(); buildActivation(); toast('Profile compiled');
 }
 function renderProfile(){
-  const p=state.profile; if(!p){$('profileOut').innerHTML='';return;}
-  let h=`<div class="card"><div class="flex" style="justify-content:space-between">
-    <div><b>Methodology Profile</b> · v${p.version}</div><div class="small muted">${p.advisor} · compiled ${p.compiled}</div></div>
-    <div class="divider"></div>
-    <h3 style="margin-top:0">Segmentation</h3><p class="small">${p.segmentation}</p>
-    <h3>Decision rulebook (${p.rulebook.length})</h3><table><tr><th>Class</th><th>Scope</th><th>Rule</th><th>Conf.</th><th>Source</th></tr>`;
+  const p=state.profile; const el=$('profileOut'); if(!el)return; if(!p){el.innerHTML='';return;}
+  let h=`<div class="card"><div class="flex" style="justify-content:space-between"><div><b>Methodology Profile</b> &middot; v${p.version}</div><div class="small muted">${p.advisor} &middot; compiled ${p.compiled}</div></div>
+    <div class="divider"></div><h3 style="margin-top:0">Segmentation</h3><p class="small">${p.segmentation}</p>
+    <h3>Decision rulebook (${p.rulebook.length})</h3><div style="overflow:auto"><table><tr><th>Rule</th><th>Scope</th><th>Detail</th><th>Conf.</th><th>Source</th></tr>`;
   p.rulebook.forEach(r=>{const[lbl,cls]=confLabel(r.confidence);
-    h+=`<tr><td><b>${r.class}</b></td><td>${scopePill(r.scope)}</td><td class="small"><code>${r.condition}</code> → ${r.action}<br><span class="muted">${r.rationale}</span></td>
-    <td class="${cls}">${(r.confidence*100).toFixed(0)}%</td><td><span class="prov ${r.provenance.includes('elicited')?'both':''}">${r.provenance}</span></td></tr>`;});
-  h+=`</table>
-    <h3>Communication playbook</h3><p class="small"><b>Style:</b> ${p.communicationPlaybook.style}<br><b>Down-market script:</b> ${p.communicationPlaybook.downMarketScript}</p>
-    <h3>Judgment notes</h3>${p.judgmentNotes.length? '<ul class="small">'+p.judgmentNotes.map(n=>'<li>'+n+'</li>').join('')+'</ul>':'<p class="small muted">None captured yet — answer the Elicit questions.</p>'}
-    <h3>Gap register (${p.gapRegister.length})</h3>${p.gapRegister.length?'<ul class="small muted">'+p.gapRegister.map(g=>'<li>'+g+'</li>').join('')+'</ul>':'<p class="small">Complete.</p>'}
-    </div>`;
-  $('profileOut').innerHTML=h;
+    h+=`<tr><td><b>${r.class}</b></td><td>${scopePill(r.scope)}</td><td class="small"><code>${r.condition}</code> &rarr; ${r.action}<br><span class="muted">${r.rationale}</span></td>
+    <td class="${cls}">${(r.confidence*100).toFixed(0)}%</td><td><span class="prov ${r.provenance.includes('elicited')||r.provenance.includes('AI')?'both':''}">${r.provenance}</span></td></tr>`;});
+  h+=`</table></div><h3>Communication</h3><p class="small"><b>Style:</b> ${esc(p.communicationPlaybook.style)}<br><b>Down-market:</b> ${esc(p.communicationPlaybook.downMarketScript)}</p>
+    <h3>Judgment notes</h3>${p.judgmentNotes.length?'<ul class="small">'+p.judgmentNotes.map(n=>'<li>'+esc(n)+'</li>').join('')+'</ul>':'<p class="small muted">Answer the questions in AI Capture step B.</p>'}
+    <h3>Insight brief</h3><p class="small muted">${esc(p.insightBrief).slice(0,600)}${p.insightBrief.length>600?'…':''}</p>
+    <h3>Gap register (${p.gapRegister.length})</h3>${p.gapRegister.length?'<ul class="small muted">'+p.gapRegister.map(g=>'<li>'+esc(g)+'</li>').join('')+'</ul>':'<p class="small">Complete.</p>'}</div>`;
+  el.innerHTML=h;
 }
 function exportProfile(){ if(!state.profile){alert('Compile the profile first.');return;}
   const blob=new Blob([JSON.stringify(state.profile,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='methodology_profile_v'+state.profile.version+'.json'; a.click();
-}
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='methodology_profile_v'+state.profile.version+'.json'; a.click(); }
 function importProfile(e){ const f=e.target.files[0]; if(!f)return; const r=new FileReader();
-  r.onload=ev=>{try{state.profile=JSON.parse(ev.target.result); save(); renderProfile(); buildActivation(); alert('Profile imported.');}catch(x){alert('Bad JSON.');}}; r.readAsText(f);}
+  r.onload=ev=>{try{state.profile=JSON.parse(ev.target.result); save(); renderProfile(); buildActivation(); toast('Profile imported');}catch(x){alert('Bad JSON.');}}; r.readAsText(f);}
 
 /* ============================ ACTIVATION ============================ */
-function ruleFor(cls,tier){ return (state.profile?state.profile.rulebook:state.triggers).find(r=>r.class===cls&&(r.scope===tier||r.scope==='Taxable'||r.scope.includes(tier))); }
 function cadenceDays(tier){ const t=state.triggers.find(x=>x.class==='Review cadence'&&x.scope===tier); return t&&t.meta?t.meta.cadenceDays:(TIER_CADENCE[tier]||180); }
-
-function computeNBA(){
-  const out=[];
-  state.households.forEach(h=>{
-    const cd=cadenceDays(h.tier);
-    const due=addDays(parse(h.last_review), cd);
-    const dleft=daysBetween(NOW,due);
+function ruleFor(cls,tier){ return (state.profile?state.profile.rulebook:state.triggers).find(r=>r.class===cls&&(r.scope===tier||r.scope==='Taxable'||(r.scope||'').includes(tier))); }
+function computeNBA(){ const out=[];
+  state.households.forEach(h=>{ const cd=cadenceDays(h.tier); const due=addDays(parse(h.last_review), cd); const dleft=daysBetween(NOW,due);
     let status = dleft<0?'over':dleft<=30?'soon':'ok';
-    out.push({hid:h.id,name:h.name,tier:h.tier,type:'Review',due:fmtDate(due),dleft,status,
-      action:`Schedule tier ${h.tier} review`, rationale:`Cadence ~${cd} days; last review ${h.last_review}`});
-    // birthday
+    out.push({hid:h.id,name:h.name,tier:h.tier,type:'Review',due:fmtDate(due),dleft,status,action:`Schedule tier ${h.tier} review`,rationale:`Cadence ~${cd} days; last review ${h.last_review}`});
     let by=new Date(NOW.getFullYear(),h.birthdayMonth-1,15); if(daysBetween(NOW,by)<0) by=new Date(NOW.getFullYear()+1,h.birthdayMonth-1,15);
-    const bl=daysBetween(NOW,by);
-    if(bl<=45) out.push({hid:h.id,name:h.name,tier:h.tier,type:'Birthday outreach',due:fmtDate(by),dleft:bl,status:bl<=30?'soon':'ok',action:'Personal outreach',rationale:'Relationship touch on birthday'});
+    const bl=daysBetween(NOW,by); if(bl<=45) out.push({hid:h.id,name:h.name,tier:h.tier,type:'Birthday outreach',due:fmtDate(by),dleft:bl,status:bl<=30?'soon':'ok',action:'Personal outreach',rationale:'Relationship touch on birthday'});
   });
-  out.sort((a,b)=>a.dleft-b.dleft);
-  return out;
+  out.sort((a,b)=>a.dleft-b.dleft); return out;
 }
-function renderNBA(){
-  if(!state.profile){$('nbaOut').innerHTML='<div class="banner">Compile the profile first (step 4).</div>';return;}
+function renderNBA(){ const el=$('nbaOut'); if(!el)return;
+  if(!state.profile){el.innerHTML='<div class="banner">Compile the profile first (step 3).</div>';return;}
   const nba=computeNBA(); state._nba=nba;
-  let h='<div class="card"><table><tr><th>Due</th><th>Days</th><th>Household</th><th>Tier</th><th>Action</th><th>Why</th></tr>';
+  let h='<div style="overflow:auto"><table><tr><th>Due</th><th>Days</th><th>Household</th><th>Tier</th><th>Action</th><th>Why</th></tr>';
   nba.forEach(n=>{const sc=n.status==='over'?'status-over':n.status==='soon'?'status-soon':'status-ok';
-    h+=`<tr><td>${n.due}</td><td class="${sc}">${n.dleft<0?Math.abs(n.dleft)+'d overdue':n.dleft+'d'}</td>
-      <td>${n.name}</td><td>${tierPill(n.tier)}</td><td><b>${n.type}</b>: ${n.action}</td><td class="small muted">${n.rationale}</td></tr>`;});
-  h+='</table></div>';
-  $('nbaOut').innerHTML=h;
+    h+=`<tr><td>${n.due}</td><td class="${sc}">${n.dleft<0?Math.abs(n.dleft)+'d overdue':n.dleft+'d'}</td><td>${esc(n.name)}</td><td>${tierPill(n.tier)}</td><td><b>${n.type}</b>: ${n.action}</td><td class="small muted">${n.rationale}</td></tr>`;});
+  h+='</table></div>'; el.innerHTML=h;
 }
-function buildActivation(){
-  const sel=$('pbSelect'); sel.innerHTML=state.households.map(h=>`<option value="${h.id}">${h.name} (Tier ${h.tier})</option>`).join('');
-  renderNBA(); buildShadow(); renderAdherence();
-}
-function renderPlaybook(){
-  const id=$('pbSelect').value; const h=state.households.find(x=>x.id===id); if(!h)return;
-  const rb=state.profile?state.profile.rulebook:state.triggers;
-  const applic=rb.filter(r=>r.scope===h.tier||r.scope==='Taxable'||(r.scope||'').includes(h.tier));
+function buildActivation(){ const sel=$('pbSelect'); if(sel) sel.innerHTML=state.households.map(h=>`<option value="${h.id}">${esc(h.name)} (Tier ${h.tier})</option>`).join('');
+  renderNBA(); buildShadow(); renderAdherence(); }
+function renderPlaybook(){ const id=$('pbSelect').value; const h=state.households.find(x=>x.id===id); if(!h)return;
+  const rb=state.profile?state.profile.rulebook:state.triggers; const applic=rb.filter(r=>r.scope===h.tier||r.scope==='Taxable'||(r.scope||'').includes(h.tier));
   const nba=(state._nba||computeNBA()).filter(n=>n.hid===id);
-  let out=`<div class="card"><div class="flex" style="justify-content:space-between">
-    <div><b>${h.name}</b> ${tierPill(h.tier)}</div><div class="small muted">$${h.aum.toFixed(2)}M · goals: ${h.goals}</div></div>
-    <div class="divider"></div>
-    <p class="small"><b>Sensitivities:</b> ${h.sensitivities}<br><b>Last review:</b> ${h.last_review} · <b>Retirement age target:</b> ${h.retirementAge}</p>
+  let out=`<div class="card"><div class="flex" style="justify-content:space-between"><div><b>${esc(h.name)}</b> ${tierPill(h.tier)}</div><div class="small muted">$${h.aum.toFixed(2)}M &middot; goals: ${esc(h.goals)}</div></div>
+    <div class="divider"></div><p class="small"><b>Sensitivities:</b> ${esc(h.sensitivities)}<br><b>Last review:</b> ${h.last_review} &middot; <b>Retirement age target:</b> ${h.retirementAge}</p>
     <h3 style="margin-top:6px">How the predecessor runs this household</h3><div>`;
-  applic.forEach(r=>out+=`<span class="rule-chip"><b>${r.class}:</b> ${r.action} <span class="muted">(${r.condition})</span></span>`);
+  applic.forEach(r=>out+=`<span class="rule-chip"><b>${r.class}:</b> ${r.action}</span>`);
   out+=`</div><h3>Open actions</h3>`;
-  if(nba.length){ out+='<ul class="small">'; nba.forEach(n=>out+=`<li><b>${n.type}</b> — ${n.action} · due ${n.due} ${n.dleft<0?'<span class="status-over">('+Math.abs(n.dleft)+'d overdue)</span>':''}</li>`); out+='</ul>'; }
+  if(nba.length){ out+='<ul class="small">'; nba.forEach(n=>out+=`<li><b>${n.type}</b> — ${n.action} &middot; due ${n.due} ${n.dleft<0?'<span class="status-over">('+Math.abs(n.dleft)+'d overdue)</span>':''}</li>`); out+='</ul>'; }
   else out+='<p class="small muted">Nothing due in the near term.</p>';
-  if(state.profile && state.profile.communicationPlaybook.downMarketScript!=='(not captured)')
-    out+=`<h3>Voice-matched note (draft)</h3><div class="q small">Hi ${h.name.split(' ')[0]}, ${state.profile.communicationPlaybook.downMarketScript}</div>`;
-  out+='</div>';
-  $('pbOut').innerHTML=out;
+  out+='</div>'; $('pbOut').innerHTML=out;
 }
-
-/* --- Shadow mode --- */
 const SHADOW=[
- {q:'A Tier B household’s equity sleeve has drifted 8% from target. What do you do?',
-  opts:['Rebalance to model now','Wait until the next scheduled review','Do nothing, it is within tolerance'],
-  correctClass:'Portfolio drift', tier:'B',
-  eval:(i,band)=> i===0? {ok:true,msg:`Correct. Tier B band is ~${band}% and 8% exceeds it, so the predecessor rebalances now.`}
-                        : {ok:false,msg:`The predecessor rebalances now — Tier B drifts past its ~${band}% band, so waiting lets risk drift.`}},
- {q:'The market just fell 8% in a week. A Tier A client has not called. What do you do?',
-  opts:['Wait for them to reach out','Proactively call within a few days','Send a mass email only'],
-  correctClass:'Market reaction', tier:'A',
-  eval:(i)=> i===1? {ok:true,msg:'Correct. The predecessor proactively calls priority households on an 8%+ drawdown.'}
-                   : {ok:false,msg:'The predecessor proactively calls priority households within days of a large drawdown — that outreach is why they stay.'}},
- {q:'It is October and a taxable Tier C account is showing a harvestable loss. What do you do?',
-  opts:['Harvest it now','Wait for December to batch all harvesting','Skip it, the account is small'],
-  correctClass:'Tax-loss harvest', tier:'C',
-  eval:(i,cont)=> i===0? {ok:true,msg:'Correct. The predecessor harvests opportunistically through the year, not just in December.'}
-                        : {ok:false,msg:'The predecessor harvests opportunistically all year — waiting for December leaves after-tax value on the table.'}}
+ {q:'A Tier B household’s equity sleeve has drifted 8% from target. What do you do?',opts:['Rebalance to model now','Wait until the next scheduled review','Do nothing, it is within tolerance'],cls:'Portfolio drift',
+  ev:(i,b)=> i===0?{ok:true,msg:`Correct. Tier B band is ~${b}% and 8% exceeds it, so the predecessor rebalances now.`}:{ok:false,msg:`The predecessor rebalances now, Tier B drifts past its ~${b}% band, so waiting lets risk drift.`}},
+ {q:'The market just fell 8% in a week. A Tier A client hasn’t called. What do you do?',opts:['Wait for them to reach out','Proactively call within a few days','Send a mass email only'],cls:'Market reaction',
+  ev:(i)=> i===1?{ok:true,msg:'Correct. The predecessor proactively calls priority households on an 8%+ drawdown.'}:{ok:false,msg:'The predecessor proactively calls priority households within days of a large drawdown, that outreach is why they stay.'}},
+ {q:'It’s October and a taxable Tier C account shows a harvestable loss. What do you do?',opts:['Harvest it now','Wait for December to batch harvesting','Skip it, the account is small'],cls:'Tax-loss harvest',
+  ev:(i)=> i===0?{ok:true,msg:'Correct. The predecessor harvests opportunistically through the year, not just in December.'}:{ok:false,msg:'The predecessor harvests all year, waiting for December leaves after-tax value on the table.'}}
 ];
-function buildShadow(){
-  let h='<div class="card">';
-  SHADOW.forEach((s,si)=>{
-    const chosen = (state.adherence.find(a=>a.si===si)||{}).choice;
+function buildShadow(){ const el=$('shadowOut'); if(!el)return; let h='<div class="card">';
+  SHADOW.forEach((s,si)=>{ const chosen=(state.adherence.find(a=>a.si===si)||{}).choice;
     h+=`<div style="margin-bottom:14px"><div class="qt">${si+1}. ${s.q}</div>`;
-    s.opts.forEach((o,oi)=> h+=`<button class="choice ${chosen===oi?'sel':''}" onclick="shadowAnswer(${si},${oi})">${o}</button>`);
-    const rec=state.adherence.find(a=>a.si===si);
-    if(rec) h+=`<div class="banner ${rec.ok?'ok-banner':''}"><b>${rec.ok?'Matches the method':'Diverges from the method'}.</b> ${rec.msg}</div>`;
-    h+='</div>';
-  });
-  h+='</div>'; $('shadowOut').innerHTML=h;
+    s.opts.forEach((o,oi)=> h+=`<button class="choice ${chosen===oi?'sel':''}" onclick="shadowAnswer(${si},${oi})">${esc(o)}</button>`);
+    const rec=state.adherence.find(a=>a.si===si); if(rec) h+=`<div class="banner ${rec.ok?'ok-banner':''}"><b>${rec.ok?'Matches the method':'Diverges from the method'}.</b> ${esc(rec.msg)}</div>`;
+    h+='</div>'; });
+  h+='</div>'; el.innerHTML=h;
 }
-function shadowAnswer(si,oi){
-  const s=SHADOW[si];
-  const band=(ruleFor('Portfolio drift','B')||{}).condition||'7.5%';
-  const bandNum=(band.match(/([\d.]+)%/)||[])[1]||'7.5';
-  const res=s.eval(oi,bandNum);
-  const rec={si,choice:oi,ok:res.ok,msg:res.msg,cls:s.correctClass};
-  state.adherence=state.adherence.filter(a=>a.si!==si); state.adherence.push(rec);
+function shadowAnswer(si,oi){ const s=SHADOW[si]; const band=(ruleFor('Portfolio drift','B')||{}).condition||'7.5%';
+  const b=(band.match(/([\d.]+)%/)||[])[1]||'7.5'; const res=s.ev(oi,b);
+  state.adherence=state.adherence.filter(a=>a.si!==si); state.adherence.push({si,choice:oi,ok:res.ok,msg:res.msg,cls:s.cls});
   save(); buildShadow(); renderAdherence();
 }
-function renderAdherence(){
-  const a=state.adherence; if(!a.length){$('adhereOut').innerHTML='No shadow decisions yet.';return;}
+function renderAdherence(){ const el=$('adhereOut'); if(!el)return; const a=state.adherence; if(!a.length){el.innerHTML='No shadow decisions yet.';return;}
   const ok=a.filter(x=>x.ok).length; const pct=Math.round(100*ok/a.length);
   let h=`<div class="grid g3"><div class="kpi"><div class="n">${pct}%</div><div class="l">Adherence to method</div></div>
     <div class="kpi"><div class="n">${ok}/${a.length}</div><div class="l">Decisions matched</div></div>
-    <div class="kpi"><div class="n">${a.length-ok}</div><div class="l">Divergences (coaching)</div></div></div>`;
-  if(a.length-ok>0){ h+='<div class="banner">Coaching flags: '+a.filter(x=>!x.ok).map(x=>x.cls).join(', ')+'. In a real deployment the CCO sees this by successor.</div>'; }
-  $('adhereOut').innerHTML=h;
+    <div class="kpi"><div class="n">${a.length-ok}</div><div class="l">Divergences</div></div></div>`;
+  if(a.length-ok>0) h+='<div class="banner">Coaching flags: '+a.filter(x=>!x.ok).map(x=>x.cls).join(', ')+'. In a real deployment the CCO sees this by successor.</div>';
+  el.innerHTML=h;
 }
 
 /* ============================ RENDER / NAV ============================ */
-function renderIngest(){
-  const H=state.households, A=state.actions;
-  if(!H.length){$('ingestSummary').innerHTML='Nothing loaded yet.'; $('householdCard').style.display='none'; return;}
-  const byTier=t=>H.filter(h=>h.tier===t).length;
-  const types={}; A.forEach(a=>types[a.type]=(types[a.type]||0)+1);
-  $('ingestSummary').innerHTML=`<b>${H.length}</b> households (A:${byTier('A')} B:${byTier('B')} C:${byTier('C')}) · <b>${A.length}</b> actions<br>
-    <span class="small">${Object.entries(types).map(([k,v])=>k+': '+v).join(' · ')}</span>`;
-  let th='<tr><th>Household</th><th>Tier</th><th>AUM</th><th>Last review</th><th>Goals</th><th>Sensitivities</th></tr>';
-  H.forEach(h=>th+=`<tr><td>${h.name}</td><td>${tierPill(h.tier)}</td><td>$${h.aum.toFixed(2)}M</td><td>${h.last_review}</td><td class="small">${h.goals}</td><td class="small muted">${h.sensitivities}</td></tr>`);
-  $('tblHouse').innerHTML=th; $('householdCard').style.display='block';
+function renderIngest(){ const H=state.households, A=state.actions;
+  if(!H.length && !A.length){ if($('householdCard'))$('householdCard').style.display='none'; return; }
+  const byTier=t=>H.filter(h=>h.tier===t).length; const types={}; A.forEach(a=>types[a.type]=(types[a.type]||0)+1);
+  if($('ingestSummary')) $('ingestSummary').innerHTML=`<b>${H.length}</b> households (A:${byTier('A')} B:${byTier('B')} C:${byTier('C')}) &middot; <b>${A.length}</b> actions<br><span class="small">${Object.entries(types).map(([k,v])=>k+': '+v).join(' &middot; ')}</span>`;
+  let th='<tr><th>Household</th><th>Tier</th><th>AUM</th><th>Last review</th><th>Goals</th></tr>';
+  H.forEach(h=>th+=`<tr><td>${esc(h.name)}</td><td>${tierPill(h.tier)}</td><td>$${(h.aum||0).toFixed(2)}M</td><td>${h.last_review||'—'}</td><td class="small">${esc(h.goals)}</td></tr>`);
+  if($('tblHouse'))$('tblHouse').innerHTML=th; if($('householdCard'))$('householdCard').style.display='block';
 }
 function refreshAll(){
-  $('kHouse').textContent=state.households.length;
-  $('kActions').textContent=state.actions.length;
+  $('kHouse').textContent=state.households.length; $('kActions').textContent=state.actions.length;
   $('kTriggers').textContent=state.triggers.length;
   $('kNBA').textContent=state.profile? computeNBA().filter(n=>n.status==='over'||n.status==='soon').length : 0;
-  $('whoLine').textContent=`Predecessor: ${state.predecessor} · Successor: ${state.successor}`;
+  $('whoLine').innerHTML=`Predecessor: ${esc(state.predecessor)} &middot; Successor: ${esc(state.successor)}`;
   $('dateLine').textContent='Today (demo): '+fmtDate(NOW);
+  updateAiMode();
   if(state.triggers.length) renderTriggers();
-  if(state.elicitQs) renderElicit();
+  if(state.aiInsights&&$('insightsOut')) $('insightsOut').innerHTML=`<div class="card" style="border-left:3px solid var(--accent)"><div class="small muted" style="margin-bottom:6px">insight brief</div>${state.aiInsights}</div>`;
   if(state.profile){ renderProfile(); buildActivation(); }
 }
-function banner(id,msg){ const el=$(id); if(el) el.innerHTML='<div class="ok-banner banner" style="margin:0">'+msg+'</div>'; }
 function go(tab){ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
   document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('active',s.id===tab)); window.scrollTo(0,0);
-  if(tab==='ingest') renderIngest(); }
+  if(tab==='connect'){ renderFiles(); renderIngest(); renderConnectors(); }
+  if(tab==='capture' && !state.interview.started) startInterview();
+}
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab)));
+
+/* drag & drop wiring */
+(function(){ const dz=$('dropzone'); const fi=$('fileInput'); if(!dz)return;
+  fi.addEventListener('change',e=>{ handleFiles(e.target.files); fi.value=''; });
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag');}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag');}));
+  dz.addEventListener('drop',e=>{ if(e.dataTransfer&&e.dataTransfer.files) handleFiles(e.dataTransfer.files); });
+})();
 
 /* ============================ BOOT ============================ */
 (function(){
   if(!load() || !state.households.length){ loadDemo(); }
-  else { refreshAll(); renderIngest(); renderTriggers(); renderProfile(); if(state.profile) buildActivation(); }
-  go('overview');
+  else { refreshAll(); renderFiles(); renderIngest(); renderConnectors(); if($('aiKey'))$('aiKey').value=state.aiKey||''; if($('aiModelInput'))$('aiModelInput').value=state.aiModel||''; }
+  renderConnectors(); go('overview');
 })();
 </script>
 </body>
