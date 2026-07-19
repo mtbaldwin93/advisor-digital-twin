@@ -148,7 +148,7 @@
     });
   }
 
-  /* ---------- flowing light-ribbon background (canvas, scroll-reactive) ---------- */
+  /* ---------- liquid flow-field background (streams with scroll) ---------- */
   function initFlow() {
     var canvas = document.createElement("canvas");
     canvas.id = "bgflow";
@@ -160,48 +160,58 @@
       W = window.innerWidth; H = window.innerHeight;
       canvas.width = W * dpr; canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = "#0A0A0E"; ctx.fillRect(0, 0, W, H);
     }
     window.addEventListener("resize", resize);
     resize();
-    var scrollY = window.scrollY || 0;
-    window.addEventListener("scroll", function () { scrollY = window.scrollY || 0; }, { passive: true });
 
-    var N = 8, lines = [];
-    for (var i = 0; i < N; i++) {
-      lines.push({
-        base: (i + 0.5) / N,
-        amp: 32 + Math.random() * 40,
-        freq: 0.0022 + Math.random() * 0.0018,
-        speed: 0.00040 + Math.random() * 0.00045,
-        phase: Math.random() * 6.283,
-        tone: i % 2
-      });
+    var scrollY = window.scrollY || 0, scrollVel = 0;
+    window.addEventListener("scroll", function () {
+      var ny = window.scrollY || 0;
+      scrollVel += (ny - scrollY);
+      scrollY = ny;
+    }, { passive: true });
+
+    // smooth pseudo-noise angle field (layered sines, no libs)
+    function field(x, y, t) {
+      return (Math.sin(x * 0.0016 + t * 0.00016)
+        + Math.cos(y * 0.0016 - t * 0.00012)
+        + Math.sin((x * 0.0009 + y * 0.0011) + t * 0.00009)) * 1.15;
     }
+
+    var N = 300, ps = [];
+    function spawn(p, seed) {
+      p.x = Math.random() * W;
+      p.y = seed ? Math.random() * H : (Math.random() < 0.5 ? -10 : H + 10) * 0 + Math.random() * H;
+      p.px = p.x; p.py = p.y;
+      p.life = 50 + Math.random() * 170;
+      p.tone = Math.random() < 0.5;
+    }
+    for (var i = 0; i < N; i++) { var p = {}; spawn(p, true); ps.push(p); }
+
     function draw(t) {
-      var span = H + 240;
-      ctx.clearRect(0, 0, W, H);
-      for (var i = 0; i < lines.length; i++) {
-        var L = lines[i];
-        var drift = scrollY * (0.05 + i * 0.02);
-        var baseY = ((((L.base * H) + drift) % span) + span) % span - 120;
+      // fade previous frame -> trailing streaks
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(10,10,14,0.15)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineWidth = 1.35;
+      var sv = scrollVel;
+      for (var i = 0; i < ps.length; i++) {
+        var p = ps[i];
+        var a = field(p.x, p.y + scrollY * 0.12, t);
+        p.px = p.x; p.py = p.y;
+        p.x += Math.cos(a) * 2.0;
+        p.y += Math.sin(a) * 2.0 + sv * 0.22;
+        p.life--;
+        ctx.strokeStyle = p.tone ? "rgba(150,165,255,0.34)" : "rgba(95,120,255,0.40)";
         ctx.beginPath();
-        for (var x = -60; x <= W + 60; x += 12) {
-          var y = baseY
-            + Math.sin(x * L.freq + t * L.speed + L.phase + scrollY * 0.0016) * L.amp
-            + Math.sin(x * 0.0009 + t * 0.00008) * 16;
-          if (x === -60) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-        }
-        var g = ctx.createLinearGradient(0, 0, W, 0);
-        g.addColorStop(0, "rgba(55,78,242,0)");
-        g.addColorStop(0.5, L.tone ? "rgba(150,165,255,0.72)" : "rgba(110,135,255,0.82)");
-        g.addColorStop(1, "rgba(55,78,242,0)");
-        ctx.strokeStyle = g;
-        ctx.lineWidth = 1.9;
-        ctx.globalAlpha = 0.8;
-        ctx.shadowColor = "rgba(90,115,255,0.7)";
-        ctx.shadowBlur = 18;
+        ctx.moveTo(p.px, p.py);
+        ctx.lineTo(p.x, p.y);
         ctx.stroke();
+        if (p.life <= 0 || p.x < -30 || p.x > W + 30 || p.y < -30 || p.y > H + 30) spawn(p, true);
       }
+      scrollVel *= 0.9;
       requestAnimationFrame(draw);
     }
     requestAnimationFrame(draw);
