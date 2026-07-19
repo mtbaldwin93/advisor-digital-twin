@@ -148,7 +148,67 @@
     });
   }
 
+  /* ---------- flowing light-ribbon background (canvas, scroll-reactive) ---------- */
+  function initFlow() {
+    var canvas = document.createElement("canvas");
+    canvas.id = "bgflow";
+    document.body.insertBefore(canvas, document.body.firstChild);
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0;
+    function resize() {
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+    var scrollY = window.scrollY || 0;
+    window.addEventListener("scroll", function () { scrollY = window.scrollY || 0; }, { passive: true });
+
+    var N = 5, lines = [];
+    for (var i = 0; i < N; i++) {
+      lines.push({
+        base: (i + 0.5) / N,
+        amp: 34 + Math.random() * 36,
+        freq: 0.0022 + Math.random() * 0.0018,
+        speed: 0.00016 + Math.random() * 0.00016,
+        phase: Math.random() * 6.283,
+        tone: i % 2
+      });
+    }
+    function draw(t) {
+      var span = H + 240;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < lines.length; i++) {
+        var L = lines[i];
+        var drift = scrollY * (0.05 + i * 0.02);
+        var baseY = ((((L.base * H) + drift) % span) + span) % span - 120;
+        ctx.beginPath();
+        for (var x = -60; x <= W + 60; x += 12) {
+          var y = baseY
+            + Math.sin(x * L.freq + t * L.speed + L.phase + scrollY * 0.0016) * L.amp
+            + Math.sin(x * 0.0009 + t * 0.00008) * 16;
+          if (x === -60) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        var g = ctx.createLinearGradient(0, 0, W, 0);
+        g.addColorStop(0, "rgba(55,78,242,0)");
+        g.addColorStop(0.5, L.tone ? "rgba(142,156,244,0.50)" : "rgba(84,104,245,0.55)");
+        g.addColorStop(1, "rgba(55,78,242,0)");
+        ctx.strokeStyle = g;
+        ctx.lineWidth = 1.6;
+        ctx.globalAlpha = 0.55;
+        ctx.shadowColor = "rgba(84,104,245,0.55)";
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+      }
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+
   function boot() {
+    try { initFlow(); } catch (e) {}
     try { initReveal(); } catch (e) {}
     try { initCountUp(); } catch (e) {}
     try { initFaq(); } catch (e) {}
