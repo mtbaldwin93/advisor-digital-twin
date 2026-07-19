@@ -1,81 +1,27 @@
-/* Wallace Succession — page effects (subtle, institutional)
-   three.js depth-particle background + scroll reveals + stat count-up
-   + Outcome attrition bar + FAQ accordions. Loaded after three.js. */
+/* Wallace Succession — page effects v4
+   flowing-gradient background is pure CSS (#bgwave). This file handles:
+   scroll reveals, stat count-up, FAQ accordions, How-it-works step icons +
+   arrows, and a distinct mini-graphic for each Outcome panel. */
 (function () {
   "use strict";
 
-  /* ---------- 1. three.js depth-particle background ---------- */
-  function initBackground() {
-    if (!window.THREE) return;
-    var canvas = document.createElement("canvas");
-    canvas.id = "bg3d";
-    document.body.insertBefore(canvas, document.body.firstChild);
-
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-
-    var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 60;
-
-    var N = 1400;
-    var positions = new Float32Array(N * 3);
-    for (var i = 0; i < N; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 230;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 170;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 170;
-    }
-    var geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
-    var near = new THREE.Points(geo, new THREE.PointsMaterial({
-      color: 0x8E9CF4, size: 0.7, transparent: true, opacity: 0.55, sizeAttenuation: true
-    }));
-    var far = new THREE.Points(geo.clone(), new THREE.PointsMaterial({
-      color: 0x374EF2, size: 1.2, transparent: true, opacity: 0.32, sizeAttenuation: true
-    }));
-    scene.add(near);
-    scene.add(far);
-
-    var mx = 0, my = 0, sy = 0;
-    window.addEventListener("mousemove", function (e) {
-      mx = e.clientX / window.innerWidth - 0.5;
-      my = e.clientY / window.innerHeight - 0.5;
-    });
-    window.addEventListener("scroll", function () { sy = window.scrollY || 0; }, { passive: true });
-
-    function resize() {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    function loop() {
-      requestAnimationFrame(loop);
-      near.rotation.y += 0.0006;
-      near.rotation.x += 0.00018;
-      far.rotation.y += 0.0004;
-      camera.position.x += (mx * 10 - camera.position.x) * 0.03;
-      camera.position.y += ((-my * 8) - (sy * 0.015) - camera.position.y) * 0.03;
-      camera.lookAt(0, 0, 0);
-      renderer.render(scene, camera);
-    }
-    loop();
+  function node(html) {
+    var d = document.createElement("div");
+    d.innerHTML = html.trim();
+    return d.firstChild;
   }
 
-  /* ---------- 2. reveal on scroll ---------- */
+  /* ---------- reveal on scroll ---------- */
   function initReveal() {
+    if (!("IntersectionObserver" in window)) return;
     var els = document.querySelectorAll(
       ".card,.step,.statcol,.secitem,.faqitem,.heropanel,.ltpanel,.ctabox,.h2c,.subc,.checkrow"
     );
-    if (!("IntersectionObserver" in window)) return;
     els.forEach(function (el, i) {
       el.style.opacity = "0";
       el.style.transform = "translateY(16px)";
       el.style.transition = "opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1)";
-      el.style.transitionDelay = (Math.min(i % 4, 3) * 0.06) + "s";
+      el.style.transitionDelay = (Math.min(i % 4, 3) * 0.05) + "s";
     });
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -89,11 +35,11 @@
     els.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- 3. stat count-up ---------- */
+  /* ---------- stat count-up ---------- */
   function countUp(el) {
     var raw = el.getAttribute("data-raw") || el.textContent;
     el.setAttribute("data-raw", raw);
-    if (/\bto\b/i.test(raw)) return; // skip ranges like "35 to 45%"
+    if (/\bto\b/i.test(raw)) return;
     var m = raw.match(/^([^0-9]*)([0-9,.]+)(.*)$/);
     if (!m) return;
     var pre = m[1], numStr = m[2], suf = m[3];
@@ -125,7 +71,7 @@
     document.querySelectorAll(".statn").forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- 4. FAQ accordions ---------- */
+  /* ---------- FAQ accordions ---------- */
   function initFaq() {
     document.querySelectorAll(".faqitem").forEach(function (item) {
       var q = item.querySelector(".faqq");
@@ -134,99 +80,80 @@
       a.style.overflow = "hidden";
       a.style.maxHeight = "0px";
       a.style.opacity = "0";
-      a.style.transition = "max-height .3s ease, opacity .3s ease, margin .3s ease";
+      a.style.transition = "max-height .3s ease, opacity .3s ease";
       q.style.cursor = "pointer";
       q.style.display = "flex";
       q.style.justifyContent = "space-between";
       q.style.alignItems = "center";
       var caret = document.createElement("span");
       caret.textContent = "+";
-      caret.style.color = "#5468F5";
-      caret.style.fontSize = "22px";
-      caret.style.lineHeight = "1";
-      caret.style.marginLeft = "16px";
-      caret.style.flex = "0 0 auto";
-      caret.style.transition = "transform .2s ease";
+      caret.style.cssText = "color:#5468F5;font-size:22px;line-height:1;margin-left:16px;flex:0 0 auto;transition:transform .2s ease";
       q.appendChild(caret);
       q.addEventListener("click", function () {
         var open = a.style.maxHeight && a.style.maxHeight !== "0px";
-        if (open) {
-          a.style.maxHeight = "0px"; a.style.opacity = "0"; caret.textContent = "+";
-        } else {
-          a.style.maxHeight = (a.scrollHeight + 40) + "px"; a.style.opacity = "1"; caret.textContent = "–";
-        }
+        if (open) { a.style.maxHeight = "0px"; a.style.opacity = "0"; caret.textContent = "+"; }
+        else { a.style.maxHeight = (a.scrollHeight + 40) + "px"; a.style.opacity = "1"; caret.textContent = "–"; }
       });
     });
   }
 
-  /* ---------- 5. Outcome attrition bar ---------- */
-  function initAttrition() {
-    var cards = document.querySelectorAll(".card");
-    cards.forEach(function (c) {
-      var h = c.querySelector(".cardh");
-      if (!h || !/keep your clients/i.test(h.textContent)) return;
+  /* ---------- SVG mini-graphics ---------- */
+  var svgCapture =
+    '<svg width="46" height="46" viewBox="0 0 48 48" fill="none"><rect x="8" y="24" width="32" height="16" rx="4" stroke="#5468F5" stroke-width="2"/><path d="M24 7v19" stroke="#8E9CF4" stroke-width="2" stroke-linecap="round"/><path d="M17 20l7 7 7-7" stroke="#8E9CF4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgCodify =
+    '<svg width="46" height="46" viewBox="0 0 48 48" fill="none"><path d="M13 15l11 18M35 15L24 33M14 14h20" stroke="#5468F5" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="14" r="4" stroke="#8E9CF4" stroke-width="2"/><circle cx="35" cy="14" r="4" stroke="#8E9CF4" stroke-width="2"/><circle cx="24" cy="34" r="5" fill="rgba(55,78,242,.25)" stroke="#5468F5" stroke-width="2"/></svg>';
+  var svgContinue =
+    '<svg width="46" height="46" viewBox="0 0 48 48" fill="none"><circle cx="15" cy="24" r="7" stroke="#8E9CF4" stroke-width="2"/><path d="M24 24h16" stroke="#5468F5" stroke-width="2" stroke-linecap="round"/><path d="M34 18l6 6-6 6" stroke="#5468F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgArrow =
+    '<svg width="30" height="18" viewBox="0 0 30 18" fill="none"><path d="M2 9h24" stroke="#374EF2" stroke-width="2" stroke-linecap="round"/><path d="M21 4l6 5-6 5" stroke="#374EF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-      var wrap = document.createElement("div");
-      wrap.style.marginTop = "16px";
+  var svgShield =
+    '<svg width="50" height="50" viewBox="0 0 52 52" fill="none"><path d="M26 6l16 6v11c0 11-7 18-16 21-9-3-16-10-16-21V12l16-6z" fill="rgba(55,78,242,.10)" stroke="#5468F5" stroke-width="2"/><path d="M18 29l5-5 4 4 8-9" stroke="#8E9CF4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 18h4v4" stroke="#8E9CF4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var svgOrbit =
+    '<svg width="50" height="50" viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="7" fill="#374EF2"/><circle cx="26" cy="26" r="18" stroke="#5468F5" stroke-width="2"/><circle cx="26" cy="8" r="3" fill="#8E9CF4"/><circle cx="44" cy="26" r="3" fill="#8E9CF4"/><circle cx="26" cy="44" r="3" fill="#8E9CF4"/><circle cx="8" cy="26" r="3" fill="#8E9CF4"/></svg>';
+  var svgDayOne =
+    '<svg width="50" height="50" viewBox="0 0 52 52" fill="none"><circle cx="26" cy="26" r="18" stroke="#5468F5" stroke-width="2"/><path d="M23 20l4-2v16" stroke="#8E9CF4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 34h9" stroke="#8E9CF4" stroke-width="2.5" stroke-linecap="round"/></svg>';
 
-      var labels = document.createElement("div");
-      labels.style.cssText = "display:flex;justify-content:space-between;font-size:12px;color:#9A9DAB;margin-bottom:6px";
-      var l1 = document.createElement("span"); l1.textContent = "35 to 45% lost";
-      var l2 = document.createElement("span"); l2.textContent = "5 to 8% lost"; l2.style.cssText = "color:#3FB37F;font-weight:700";
-      labels.appendChild(l1); labels.appendChild(l2);
-
-      var track = document.createElement("div");
-      track.style.cssText = "height:9px;border-radius:6px;background:#161a2e;overflow:hidden";
-      var bar = document.createElement("div");
-      bar.style.cssText = "height:100%;width:45%;border-radius:6px;background:linear-gradient(90deg,#E0616B,#8E9CF4);transition:width 1.4s cubic-bezier(.2,.7,.2,1)";
-      track.appendChild(bar);
-
-      var cap = document.createElement("div");
-      cap.style.cssText = "font-size:11.5px;color:#6E7180;margin-top:6px";
-      cap.textContent = "Attrition when the successor already runs the book your way.";
-
-      wrap.appendChild(labels); wrap.appendChild(track); wrap.appendChild(cap);
-      c.appendChild(wrap);
-
-      if ("IntersectionObserver" in window) {
-        var io = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (e.isIntersecting) { setTimeout(function () { bar.style.width = "8%"; }, 250); io.unobserve(e.target); }
-          });
-        }, { threshold: 0.4 });
-        io.observe(c);
-      } else {
-        bar.style.width = "8%";
+  /* ---------- How it works: icons + arrows ---------- */
+  function initSteps() {
+    var map = { "capture": svgCapture, "codify": svgCodify, "continue": svgContinue };
+    var steps = document.querySelectorAll(".step");
+    steps.forEach(function (s) {
+      var h = s.querySelector(".steph");
+      var key = h ? h.textContent.trim().toLowerCase() : "";
+      var svg = map[key] || svgCapture;
+      s.insertBefore(node('<div class="stepicon">' + svg + "</div>"), s.firstChild);
+    });
+    var container = document.querySelector(".steps");
+    if (container) {
+      var cards = container.querySelectorAll(".step");
+      for (var i = 0; i < cards.length - 1; i++) {
+        container.insertBefore(node('<div class="steparrow">' + svgArrow + "</div>"), cards[i].nextSibling);
       }
+    }
+  }
+
+  /* ---------- Outcome: one graphic per panel ---------- */
+  function initOutcome() {
+    var map = {
+      "preserve book value": svgShield,
+      "keep your clients": svgOrbit,
+      "a successor ready on day one": svgDayOne
+    };
+    document.querySelectorAll(".card").forEach(function (c) {
+      var h = c.querySelector(".cardh");
+      if (!h) return;
+      var svg = map[h.textContent.trim().toLowerCase()];
+      if (svg) c.insertBefore(node('<div class="outicon">' + svg + "</div>"), c.firstChild);
     });
   }
 
-  /* ---------- 6. How-it-works: animated connector line under header ---------- */
-  function initHowLine() {
-    var how = document.getElementById("how");
-    if (!how) return;
-    var head = how.querySelector(".h2c");
-    if (!head) return;
-    var line = document.createElement("div");
-    line.style.cssText = "height:3px;width:0;margin:18px auto 0;border-radius:2px;background:linear-gradient(90deg,#374EF2,#8E9CF4);transition:width 1.1s cubic-bezier(.2,.7,.2,1)";
-    head.parentNode.insertBefore(line, head.nextSibling);
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) { setTimeout(function () { line.style.width = "180px"; }, 200); io.unobserve(e.target); }
-        });
-      }, { threshold: 0.5 });
-      io.observe(head);
-    } else { line.style.width = "180px"; }
-  }
-
   function boot() {
-    try { initBackground(); } catch (e) {}
     try { initReveal(); } catch (e) {}
     try { initCountUp(); } catch (e) {}
     try { initFaq(); } catch (e) {}
-    try { initAttrition(); } catch (e) {}
-    try { initHowLine(); } catch (e) {}
+    try { initSteps(); } catch (e) {}
+    try { initOutcome(); } catch (e) {}
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
