@@ -179,37 +179,45 @@
         + Math.sin((x * 0.0009 + y * 0.0011) + t * 0.00009)) * 1.15;
     }
 
-    var N = 340, ps = [];
+    var N = 240, ps = [];
     function spawn(p) {
       p.x = Math.random() * W;
       p.y = Math.random() * H;
-      p.px = p.x; p.py = p.y;
-      p.life = 80 + Math.random() * 220;
+      p.hist = [];
+      p.life = 120 + Math.random() * 260;
       p.tone = Math.random() < 0.5;
     }
     for (var i = 0; i < N; i++) { var p = {}; spawn(p); ps.push(p); }
 
+    function tail(p, from, alpha) {
+      var h = p.hist;
+      if (from < 0) from = 0;
+      if (h.length - from < 2) return;
+      ctx.strokeStyle = p.tone ? "rgba(150,165,255," + alpha + ")" : "rgba(95,120,255," + alpha + ")";
+      ctx.beginPath();
+      ctx.moveTo(h[from][0], h[from][1]);
+      for (var j = from + 1; j < h.length; j++) ctx.lineTo(h[j][0], h[j][1]);
+      ctx.stroke();
+    }
+
     function draw(t) {
-      // gentle fade -> long trailing streaks
-      ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(10,10,14,0.075)";
-      ctx.fillRect(0, 0, W, H);
+      ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = "lighter";
-      ctx.lineWidth = 1.6;
+      ctx.lineJoin = "round"; ctx.lineCap = "round";
       var sv = scrollVel;
       for (var i = 0; i < ps.length; i++) {
         var p = ps[i];
         var a = field(p.x, p.y + scrollY * 0.12, t);
-        p.px = p.x; p.py = p.y;
-        p.x += Math.cos(a) * 3.3;
-        p.y += Math.sin(a) * 3.3 + sv * 0.30;
+        p.x += Math.cos(a) * 3.2;
+        p.y += Math.sin(a) * 3.2 + sv * 0.32;
+        p.hist.push([p.x, p.y]);
+        if (p.hist.length > 26) p.hist.shift();
         p.life--;
-        ctx.strokeStyle = p.tone ? "rgba(150,165,255,0.42)" : "rgba(95,120,255,0.5)";
-        ctx.beginPath();
-        ctx.moveTo(p.px, p.py);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-        if (p.life <= 0 || p.x < -30 || p.x > W + 30 || p.y < -30 || p.y > H + 30) spawn(p);
+        if (p.hist.length > 1) {
+          ctx.lineWidth = 1.5; tail(p, 0, 0.16);
+          ctx.lineWidth = 2.1; tail(p, p.hist.length - 8, 0.45);
+        }
+        if (p.life <= 0 || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40) spawn(p);
       }
       scrollVel *= 0.9;
       requestAnimationFrame(draw);
