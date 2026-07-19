@@ -173,14 +173,15 @@
       scrollY = ny;
     }, { passive: true });
 
-    // smooth pseudo-noise angle field (layered sines, no libs)
+    // smooth pseudo-noise angle field (layered sines + gentle curl, no libs)
     function field(x, y, t) {
-      return (Math.sin(x * 0.00075 + t * 0.00012)
-        + Math.cos(y * 0.00085 - t * 0.00009)
-        + Math.sin((x * 0.00045 + y * 0.00055) + t * 0.00006)) * 0.95;
+      return (Math.sin(x * 0.0015 + t * 0.00012)
+        + Math.cos(y * 0.0017 - t * 0.00009)
+        + Math.sin((x * 0.0012 + y * 0.00144) + t * 0.00006)) * 0.95
+        + 0.22 * Math.sin(x * 0.004 + Math.cos(y * 0.004));
     }
 
-    var N = 200, ps = [];
+    var N = 210, ps = [];
     function spawn(p) {
       p.x = Math.random() * W;
       p.y = Math.random() * H;
@@ -190,10 +191,11 @@
     }
     for (var i = 0; i < N; i++) { var p = {}; spawn(p); ps.push(p); }
 
-    function tail(p, from, alpha) {
+    function tail(p, from, alpha, lw) {
       var h = p.hist;
       if (from < 0) from = 0;
       if (h.length - from < 2) return;
+      ctx.lineWidth = lw;
       ctx.strokeStyle = p.tone ? "rgba(150,165,255," + alpha + ")" : "rgba(95,120,255," + alpha + ")";
       ctx.beginPath();
       ctx.moveTo(h[from][0], h[from][1]);
@@ -209,14 +211,14 @@
       for (var i = 0; i < ps.length; i++) {
         var p = ps[i];
         var a = field(p.x, p.y + scrollY * 0.12, t);
-        p.x += Math.cos(a) * 3.0;
-        p.y += Math.sin(a) * 3.0 + sv * 0.32;
+        p.x += Math.cos(a) * 1.9;
+        p.y += Math.sin(a) * 1.9 + sv * 0.32;
         p.hist.push([p.x, p.y]);
-        if (p.hist.length > 48) p.hist.shift();
+        if (p.hist.length > 56) p.hist.shift();
         p.life--;
         if (p.hist.length > 1) {
-          ctx.lineWidth = 1.7; tail(p, 0, 0.52);
-          ctx.lineWidth = 2.4; tail(p, p.hist.length - 16, 0.75);
+          tail(p, 0, 0.3, 1.4);
+          tail(p, p.hist.length - 16, 0.62, 2.1);
         }
         if (p.life <= 0 || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40) spawn(p);
       }
