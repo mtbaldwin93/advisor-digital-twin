@@ -179,37 +179,37 @@
         + Math.sin((x * 0.0009 + y * 0.0011) + t * 0.00009)) * 1.15;
     }
 
-    var N = 300, ps = [];
-    function spawn(p, seed) {
+    var N = 340, ps = [];
+    function spawn(p) {
       p.x = Math.random() * W;
-      p.y = seed ? Math.random() * H : (Math.random() < 0.5 ? -10 : H + 10) * 0 + Math.random() * H;
+      p.y = Math.random() * H;
       p.px = p.x; p.py = p.y;
-      p.life = 50 + Math.random() * 170;
+      p.life = 80 + Math.random() * 220;
       p.tone = Math.random() < 0.5;
     }
-    for (var i = 0; i < N; i++) { var p = {}; spawn(p, true); ps.push(p); }
+    for (var i = 0; i < N; i++) { var p = {}; spawn(p); ps.push(p); }
 
     function draw(t) {
-      // fade previous frame -> trailing streaks
+      // gentle fade -> long trailing streaks
       ctx.globalCompositeOperation = "source-over";
-      ctx.fillStyle = "rgba(10,10,14,0.15)";
+      ctx.fillStyle = "rgba(10,10,14,0.075)";
       ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = "lighter";
-      ctx.lineWidth = 1.35;
+      ctx.lineWidth = 1.6;
       var sv = scrollVel;
       for (var i = 0; i < ps.length; i++) {
         var p = ps[i];
         var a = field(p.x, p.y + scrollY * 0.12, t);
         p.px = p.x; p.py = p.y;
-        p.x += Math.cos(a) * 2.0;
-        p.y += Math.sin(a) * 2.0 + sv * 0.22;
+        p.x += Math.cos(a) * 3.3;
+        p.y += Math.sin(a) * 3.3 + sv * 0.30;
         p.life--;
-        ctx.strokeStyle = p.tone ? "rgba(150,165,255,0.34)" : "rgba(95,120,255,0.40)";
+        ctx.strokeStyle = p.tone ? "rgba(150,165,255,0.42)" : "rgba(95,120,255,0.5)";
         ctx.beginPath();
         ctx.moveTo(p.px, p.py);
         ctx.lineTo(p.x, p.y);
         ctx.stroke();
-        if (p.life <= 0 || p.x < -30 || p.x > W + 30 || p.y < -30 || p.y > H + 30) spawn(p, true);
+        if (p.life <= 0 || p.x < -30 || p.x > W + 30 || p.y < -30 || p.y > H + 30) spawn(p);
       }
       scrollVel *= 0.9;
       requestAnimationFrame(draw);
