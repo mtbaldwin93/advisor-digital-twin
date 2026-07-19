@@ -167,31 +167,31 @@
 
     var css = document.createElement("style");
     css.textContent =
-      "#bgflow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#0A0A0E}" +
-      ".bgmesh{position:absolute;left:-50%;top:-50%;width:200%;height:200%;filter:blur(90px);transform:translate3d(0,0,0);will-change:transform}" +
-      ".bgblob{position:absolute;border-radius:50%;opacity:.5;mix-blend-mode:screen}" +
-      ".bgb1{width:52%;height:52%;left:6%;top:10%;background:radial-gradient(circle at center,#4B5BFF,rgba(75,91,255,0) 60%);animation:bgf1 34s ease-in-out infinite}" +
-      ".bgb2{width:48%;height:48%;left:50%;top:4%;background:radial-gradient(circle at center,#6D5BFF,rgba(109,91,255,0) 60%);animation:bgf2 42s ease-in-out infinite}" +
-      ".bgb3{width:58%;height:58%;left:28%;top:46%;background:radial-gradient(circle at center,#2E42C9,rgba(46,66,201,0) 60%);animation:bgf3 38s ease-in-out infinite}" +
-      ".bgb4{width:44%;height:44%;left:58%;top:52%;background:radial-gradient(circle at center,#3A5BFF,rgba(58,91,255,0) 60%);animation:bgf4 46s ease-in-out infinite}" +
-      "@keyframes bgf1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,7%) scale(1.14)}}" +
-      "@keyframes bgf2{0%,100%{transform:translate(0,0) scale(1.06)}50%{transform:translate(-6%,5%) scale(1)}}" +
-      "@keyframes bgf3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-6%) scale(1.1)}}" +
-      "@keyframes bgf4{0%,100%{transform:translate(0,0) scale(1.07)}50%{transform:translate(-5%,-6%) scale(1)}}" +
-      "@media(max-width:700px){.bgmesh{filter:blur(64px)}}";
+      "#bgflow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#07070B}" +
+      ".bgmesh{position:absolute;left:-50%;top:-50%;width:200%;height:200%;filter:blur(72px);transform:translate3d(0,0,0);will-change:transform}" +
+      ".bgblob{position:absolute;border-radius:50%;mix-blend-mode:screen;will-change:transform}" +
+      ".bgb1{width:46%;height:46%;left:7%;top:5%;background:radial-gradient(circle at center,rgba(90,108,255,.9),rgba(90,108,255,0) 62%);animation:bgf1 19s ease-in-out infinite}" +
+      ".bgb2{width:42%;height:42%;left:49%;top:1%;background:radial-gradient(circle at center,rgba(124,92,255,.85),rgba(124,92,255,0) 62%);animation:bgf2 24s ease-in-out infinite}" +
+      ".bgb3{width:52%;height:52%;left:20%;top:40%;background:radial-gradient(circle at center,rgba(40,78,224,.9),rgba(40,78,224,0) 62%);animation:bgf3 22s ease-in-out infinite}" +
+      ".bgb4{width:40%;height:40%;left:56%;top:46%;background:radial-gradient(circle at center,rgba(58,130,246,.8),rgba(58,130,246,0) 62%);animation:bgf4 27s ease-in-out infinite}" +
+      "@keyframes bgf1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20%,12%) scale(1.22)}66%{transform:translate(8%,26%) scale(.92)}}" +
+      "@keyframes bgf2{0%,100%{transform:translate(0,0) scale(1.1)}33%{transform:translate(-18%,14%) scale(.94)}66%{transform:translate(-6%,-16%) scale(1.18)}}" +
+      "@keyframes bgf3{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(16%,-14%) scale(1.18)}66%{transform:translate(-14%,-6%) scale(1.06)}}" +
+      "@keyframes bgf4{0%,100%{transform:translate(0,0) scale(1.06)}33%{transform:translate(-16%,-18%) scale(1)}66%{transform:translate(-20%,10%) scale(1.22)}}" +
+      "@media(max-width:700px){.bgmesh{filter:blur(52px)}}";
     document.head.appendChild(css);
 
-    // parallax drift on scroll (eased, GPU transform only)
-    var target = window.scrollY || 0, cur = target, ticking = false;
+    // scroll reaction: eased parallax drift on the whole mesh (GPU transform only)
+    var target = window.scrollY || 0, cur = target, running = false;
     function loop() {
-      cur += (target - cur) * 0.08;
-      mesh.style.transform = "translate3d(0," + (-cur * 0.06) + "px,0)";
+      cur += (target - cur) * 0.09;
+      mesh.style.transform = "translate3d(" + (cur * 0.05) + "px," + (-cur * 0.16) + "px,0)";
       if (Math.abs(target - cur) > 0.4) { requestAnimationFrame(loop); }
-      else { mesh.style.transform = "translate3d(0," + (-target * 0.06) + "px,0)"; ticking = false; }
+      else { running = false; }
     }
     window.addEventListener("scroll", function () {
       target = window.scrollY || 0;
-      if (!ticking) { ticking = true; requestAnimationFrame(loop); }
+      if (!running) { running = true; requestAnimationFrame(loop); }
     }, { passive: true });
   }
 
