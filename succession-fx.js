@@ -166,13 +166,13 @@
     var scrollY = window.scrollY || 0;
     window.addEventListener("scroll", function () { scrollY = window.scrollY || 0; }, { passive: true });
 
-    var N = 5, lines = [];
+    var N = 8, lines = [];
     for (var i = 0; i < N; i++) {
       lines.push({
         base: (i + 0.5) / N,
-        amp: 34 + Math.random() * 36,
+        amp: 32 + Math.random() * 40,
         freq: 0.0022 + Math.random() * 0.0018,
-        speed: 0.00016 + Math.random() * 0.00016,
+        speed: 0.00040 + Math.random() * 0.00045,
         phase: Math.random() * 6.283,
         tone: i % 2
       });
@@ -193,13 +193,13 @@
         }
         var g = ctx.createLinearGradient(0, 0, W, 0);
         g.addColorStop(0, "rgba(55,78,242,0)");
-        g.addColorStop(0.5, L.tone ? "rgba(142,156,244,0.50)" : "rgba(84,104,245,0.55)");
+        g.addColorStop(0.5, L.tone ? "rgba(150,165,255,0.72)" : "rgba(110,135,255,0.82)");
         g.addColorStop(1, "rgba(55,78,242,0)");
         ctx.strokeStyle = g;
-        ctx.lineWidth = 1.6;
-        ctx.globalAlpha = 0.55;
-        ctx.shadowColor = "rgba(84,104,245,0.55)";
-        ctx.shadowBlur = 12;
+        ctx.lineWidth = 1.9;
+        ctx.globalAlpha = 0.8;
+        ctx.shadowColor = "rgba(90,115,255,0.7)";
+        ctx.shadowBlur = 18;
         ctx.stroke();
       }
       requestAnimationFrame(draw);
