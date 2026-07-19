@@ -174,9 +174,9 @@
 
     // smooth pseudo-noise angle field (layered sines, no libs)
     function field(x, y, t) {
-      return (Math.sin(x * 0.0016 + t * 0.00016)
-        + Math.cos(y * 0.0016 - t * 0.00012)
-        + Math.sin((x * 0.0009 + y * 0.0011) + t * 0.00009)) * 1.15;
+      return (Math.sin(x * 0.00075 + t * 0.00012)
+        + Math.cos(y * 0.00085 - t * 0.00009)
+        + Math.sin((x * 0.00045 + y * 0.00055) + t * 0.00006)) * 0.95;
     }
 
     var N = 200, ps = [];
