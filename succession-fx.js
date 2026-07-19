@@ -214,8 +214,8 @@
         if (p.hist.length > 48) p.hist.shift();
         p.life--;
         if (p.hist.length > 1) {
-          ctx.lineWidth = 1.4; tail(p, 0, 0.30);
-          ctx.lineWidth = 2.1; tail(p, p.hist.length - 14, 0.55);
+          ctx.lineWidth = 1.7; tail(p, 0, 0.52);
+          ctx.lineWidth = 2.4; tail(p, p.hist.length - 16, 0.75);
         }
         if (p.life <= 0 || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40) spawn(p);
       }
