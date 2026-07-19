@@ -148,84 +148,51 @@
     });
   }
 
-  /* ---------- liquid flow-field background (streams with scroll) ---------- */
+  /* ---------- slow liquid mesh gradient (drifts with scroll) ---------- */
   function initFlow() {
-    var canvas = document.createElement("canvas");
-    canvas.id = "bgflow";
-    document.body.insertBefore(canvas, document.body.firstChild);
-    var ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2), W = 0, H = 0;
-    function resize() {
-      W = window.innerWidth; H = window.innerHeight;
-      canvas.width = W * dpr; canvas.height = H * dpr;
-      canvas.style.width = W + "px"; canvas.style.height = H + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = "#0A0A0E"; ctx.fillRect(0, 0, W, H);
-    }
-    window.addEventListener("resize", resize);
-    resize();
+    if (document.getElementById("bgflow")) return;
 
-    var scrollY = window.scrollY || 0, scrollVel = 0;
+    var wrap = document.createElement("div");
+    wrap.id = "bgflow";
+    var mesh = document.createElement("div");
+    mesh.className = "bgmesh";
+    var names = ["bgb1", "bgb2", "bgb3", "bgb4"];
+    for (var i = 0; i < names.length; i++) {
+      var b = document.createElement("div");
+      b.className = "bgblob " + names[i];
+      mesh.appendChild(b);
+    }
+    wrap.appendChild(mesh);
+    document.body.insertBefore(wrap, document.body.firstChild);
+
+    var css = document.createElement("style");
+    css.textContent =
+      "#bgflow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#0A0A0E}" +
+      ".bgmesh{position:absolute;left:-50%;top:-50%;width:200%;height:200%;filter:blur(90px);transform:translate3d(0,0,0);will-change:transform}" +
+      ".bgblob{position:absolute;border-radius:50%;opacity:.5;mix-blend-mode:screen}" +
+      ".bgb1{width:52%;height:52%;left:6%;top:10%;background:radial-gradient(circle at center,#4B5BFF,rgba(75,91,255,0) 60%);animation:bgf1 34s ease-in-out infinite}" +
+      ".bgb2{width:48%;height:48%;left:50%;top:4%;background:radial-gradient(circle at center,#6D5BFF,rgba(109,91,255,0) 60%);animation:bgf2 42s ease-in-out infinite}" +
+      ".bgb3{width:58%;height:58%;left:28%;top:46%;background:radial-gradient(circle at center,#2E42C9,rgba(46,66,201,0) 60%);animation:bgf3 38s ease-in-out infinite}" +
+      ".bgb4{width:44%;height:44%;left:58%;top:52%;background:radial-gradient(circle at center,#3A5BFF,rgba(58,91,255,0) 60%);animation:bgf4 46s ease-in-out infinite}" +
+      "@keyframes bgf1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,7%) scale(1.14)}}" +
+      "@keyframes bgf2{0%,100%{transform:translate(0,0) scale(1.06)}50%{transform:translate(-6%,5%) scale(1)}}" +
+      "@keyframes bgf3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-6%) scale(1.1)}}" +
+      "@keyframes bgf4{0%,100%{transform:translate(0,0) scale(1.07)}50%{transform:translate(-5%,-6%) scale(1)}}" +
+      "@media(max-width:700px){.bgmesh{filter:blur(64px)}}";
+    document.head.appendChild(css);
+
+    // parallax drift on scroll (eased, GPU transform only)
+    var target = window.scrollY || 0, cur = target, ticking = false;
+    function loop() {
+      cur += (target - cur) * 0.08;
+      mesh.style.transform = "translate3d(0," + (-cur * 0.06) + "px,0)";
+      if (Math.abs(target - cur) > 0.4) { requestAnimationFrame(loop); }
+      else { mesh.style.transform = "translate3d(0," + (-target * 0.06) + "px,0)"; ticking = false; }
+    }
     window.addEventListener("scroll", function () {
-      var ny = window.scrollY || 0;
-      scrollVel += (ny - scrollY);
-      scrollY = ny;
+      target = window.scrollY || 0;
+      if (!ticking) { ticking = true; requestAnimationFrame(loop); }
     }, { passive: true });
-
-    // smooth pseudo-noise angle field (layered sines + gentle curl, no libs)
-    function field(x, y, t) {
-      return (Math.sin(x * 0.0015 + t * 0.00012)
-        + Math.cos(y * 0.0017 - t * 0.00009)
-        + Math.sin((x * 0.0012 + y * 0.00144) + t * 0.00006)) * 0.95
-        + 0.22 * Math.sin(x * 0.004 + Math.cos(y * 0.004));
-    }
-
-    var N = 210, ps = [];
-    function spawn(p) {
-      p.x = Math.random() * W;
-      p.y = Math.random() * H;
-      p.hist = [];
-      p.life = 160 + Math.random() * 320;
-      p.tone = Math.random() < 0.5;
-    }
-    for (var i = 0; i < N; i++) { var p = {}; spawn(p); ps.push(p); }
-
-    function tail(p, from, alpha, lw) {
-      var h = p.hist;
-      if (from < 0) from = 0;
-      if (h.length - from < 2) return;
-      ctx.lineWidth = lw;
-      ctx.strokeStyle = p.tone ? "rgba(150,165,255," + alpha + ")" : "rgba(95,120,255," + alpha + ")";
-      ctx.beginPath();
-      ctx.moveTo(h[from][0], h[from][1]);
-      for (var j = from + 1; j < h.length; j++) ctx.lineTo(h[j][0], h[j][1]);
-      ctx.stroke();
-    }
-
-    function draw(t) {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = "lighter";
-      ctx.lineJoin = "round"; ctx.lineCap = "round";
-      var sv = scrollVel;
-      for (var i = 0; i < ps.length; i++) {
-        var p = ps[i];
-        var a = field(p.x, p.y + scrollY * 0.12, t);
-        p.x += Math.cos(a) * 1.9;
-        p.y += Math.sin(a) * 1.9 + sv * 0.32;
-        p.hist.push([p.x, p.y]);
-        if (p.hist.length > 56) p.hist.shift();
-        p.life--;
-        if (p.hist.length > 1) {
-          tail(p, 0, 0.3, 1.4);
-          tail(p, p.hist.length - 16, 0.62, 2.1);
-        }
-        if (p.life <= 0 || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40) spawn(p);
-      }
-      scrollVel *= 0.9;
-      requestAnimationFrame(draw);
-    }
-    requestAnimationFrame(draw);
   }
 
   function boot() {
