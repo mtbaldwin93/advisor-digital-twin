@@ -167,13 +167,13 @@
 
     var css = document.createElement("style");
     css.textContent =
-      "#bgflow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#07070B}" +
-      ".bgmesh{position:absolute;left:-50%;top:-50%;width:200%;height:200%;filter:blur(72px);transform:translate3d(0,0,0);will-change:transform}" +
+      "#bgflow{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;background:#050508}" +
+      ".bgmesh{position:absolute;left:-50%;top:-50%;width:200%;height:200%;filter:blur(80px);transform:translate3d(0,0,0);will-change:transform}" +
       ".bgblob{position:absolute;border-radius:50%;mix-blend-mode:screen;will-change:transform}" +
-      ".bgb1{width:46%;height:46%;left:7%;top:5%;background:radial-gradient(circle at center,rgba(90,108,255,.9),rgba(90,108,255,0) 62%);animation:bgf1 19s ease-in-out infinite}" +
-      ".bgb2{width:42%;height:42%;left:49%;top:1%;background:radial-gradient(circle at center,rgba(124,92,255,.85),rgba(124,92,255,0) 62%);animation:bgf2 24s ease-in-out infinite}" +
-      ".bgb3{width:52%;height:52%;left:20%;top:40%;background:radial-gradient(circle at center,rgba(40,78,224,.9),rgba(40,78,224,0) 62%);animation:bgf3 22s ease-in-out infinite}" +
-      ".bgb4{width:40%;height:40%;left:56%;top:46%;background:radial-gradient(circle at center,rgba(58,130,246,.8),rgba(58,130,246,0) 62%);animation:bgf4 27s ease-in-out infinite}" +
+      ".bgb1{width:44%;height:44%;left:6%;top:4%;background:radial-gradient(circle at center,rgba(58,72,190,.34),rgba(58,72,190,0) 64%);animation:bgf1 19s ease-in-out infinite}" +
+      ".bgb2{width:40%;height:40%;left:50%;top:0%;background:radial-gradient(circle at center,rgba(84,64,180,.3),rgba(84,64,180,0) 64%);animation:bgf2 24s ease-in-out infinite}" +
+      ".bgb3{width:50%;height:50%;left:20%;top:42%;background:radial-gradient(circle at center,rgba(30,54,150,.36),rgba(30,54,150,0) 64%);animation:bgf3 22s ease-in-out infinite}" +
+      ".bgb4{width:38%;height:38%;left:58%;top:48%;background:radial-gradient(circle at center,rgba(40,86,170,.28),rgba(40,86,170,0) 64%);animation:bgf4 27s ease-in-out infinite}" +
       "@keyframes bgf1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(20%,12%) scale(1.22)}66%{transform:translate(8%,26%) scale(.92)}}" +
       "@keyframes bgf2{0%,100%{transform:translate(0,0) scale(1.1)}33%{transform:translate(-18%,14%) scale(.94)}66%{transform:translate(-6%,-16%) scale(1.18)}}" +
       "@keyframes bgf3{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(16%,-14%) scale(1.18)}66%{transform:translate(-14%,-6%) scale(1.06)}}" +
